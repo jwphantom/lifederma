@@ -37,6 +37,9 @@
               },
               {
                 "input": "src/global.scss"
+              },
+              {
+                "input": "public/css/bootstrap.min.css"
               }
             ],
             "scripts": []
