@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Produit</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="card-item">
+    <ion-card-header>
+      <ion-card-subtitle>Ajouter un produit</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="productForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Nom du produit</label>
+          <input type="text" class="form-control" formControlName="name" placeholder="Crème Seins">
+        </div>
+        <br>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Code du Produit</label>
+          <input type="text" class="form-control" formControlName="code" placeholder="CS">
+        </div>
+        <br>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Prix du Produit</label>
+          <input type="number" class="form-control" formControlName="price" placeholder="5000">
+        </div>
+        <br>
+        <button 
+        class="btn btn-life col-12"
+        ion-button
+            full
+            (click)="onSubmitForm()"
+            [disabled]="productForm.invalid">
+            Valider
+        </button>
+
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

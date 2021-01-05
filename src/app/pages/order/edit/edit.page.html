@@ -1,0 +1,180 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Commande</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Data to display after skeleton screen -->
+  <div *ngIf="display">
+    <ion-card class="card-item">
+      <ion-card-header>
+        <ion-card-subtitle>Modifier une commande </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="orderEditForm">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Jour de Livraison </label>
+            <input type="date" class="form-control" formControlName="tdate">
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Numero</label>
+            <input type="number" class="form-control" formControlName="phone">
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Nom Client</label>
+            <input type="text" class="form-control" formControlName="name">
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Quartier</label>
+            <input type="text" class="form-control" formControlName="district">
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Livraison</label>
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">XAF</span>
+              </div>
+              <input type="number" class="form-control" formControlName="livraison" aria-label="Small"
+                aria-describedby="inputGroup-sizing-sm">
+            </div>
+
+          </div>
+          <br>
+
+          <label for="exampleInputEmail1">Produits</label>
+
+
+          <div formArrayName="commande">
+            <div *ngFor="let control of getCommandeArray().controls; let i = index">
+              <div class="row">
+                <div class="col-10">
+                  <div class="input-group" [formGroupName]="i">
+                    <input formControlName="qty" type="number" class="form-control" id="inlineFormInputGroupUsername">
+
+                    <ion-select *ngIf="selectRestoreDisplay" value="7000-TVX" formControlName="product" class=" col-5" style="border: 1px solid #ced4d9 ;background-color: transparent;" >
+                      <ion-select-option *ngFor="let produit of produits" value="{{produit.price}}-{{produit.code}}">{{produit.code}}</ion-select-option>
+                    </ion-select>
+                    
+                    <ion-select *ngIf="selectDisplay" value="7000-TVX" formControlName="product" class=" col-5" style="border: 1px solid #ced4d9 ;background-color: transparent;" >
+                      <ion-select-option *ngFor="let produit of produits" value="{{produit.price}}-{{produit.code}}">{{produit.code}}</ion-select-option>
+                    </ion-select>
+
+
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <button type="button" class="btn btn-danger" (click)="onRemoveCommande(i)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <br>
+
+            </div>
+
+
+
+          </div>
+
+          <br>
+
+
+          <button class="btn btn-dark col-12" ion-button full (click)="onAddCommande()">Autre(s) produit(s)?</button>
+
+          <br>
+          <br>
+          <button class="btn btn-life col-12" ion-button full (click)="onSubmitForm()"
+            [disabled]="orderEditForm.invalid">
+            Valider
+          </button>
+
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+  <!-- Skeleton screen -->
+  <div *ngIf="!display" class="row">
+
+    <ion-list class="row">
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+</ion-content>

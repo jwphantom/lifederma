@@ -1,0 +1,24 @@
+/* Custom Skeleton Line Height and Margin */
+.custom-skeleton ion-skeleton-text {
+    line-height: 13px;
+  }
+  
+  .custom-skeleton ion-skeleton-text:last-child {
+    margin-bottom: 5px;
+  }
+
+.card-item{
+  border-style: solid;
+  border-color: #94b817;
+  border-width : thin;
+}
+
+.alertLogCss{
+  background-color: white;
+  color: red;
+  font-size: 4px;
+  button{
+      color: red;
+      font-size: 5px;
+  }
+}

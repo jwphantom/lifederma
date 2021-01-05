@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tablinks/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reglages</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="card-item">
+
+    <ion-item>
+      <ion-avatar slot="start" style="width: 100px;height: 100px;"> 
+        <img src="../../../assets/user.svg">
+      </ion-avatar>
+      <ion-label>
+        <ion-row>
+
+          <ion-col>
+            <h2 style="font-weight: bold; font-size: 20px;">John Doe</h2>
+          </ion-col>
+          <ion-col style="text-align: end;">
+            <h3>CM</h3>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+
+        </ion-row>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+  <br>
+
+  <ion-card>
+    <ion-item>
+      <ion-col class="ion-text-start" size="5"> Numero : </ion-col>
+      <ion-col class="" size="5">
+        690072102
+      </ion-col>
+      <ion-icon slot="end" name="create-outline"></ion-icon>
+    </ion-item>
+  </ion-card>
+
+  <br>
+  <ion-card>
+    <ion-item>
+      <ion-avatar slot="start" > 
+        <img src="../../../assets/login.svg">
+      </ion-avatar>
+      Compte
+      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+
+    </ion-item>
+    <ion-item [routerLink]="['/tabs/settings/contacts']">
+      <ion-avatar slot="start" > 
+        <img src="../../../assets/phone.svg">
+      </ion-avatar>
+      Contact
+      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-avatar slot="start" > 
+        <img src="../../../assets/mail.svg">
+      </ion-avatar>
+      SMS
+      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+    </ion-item>
+    
+  </ion-card>
+
+  <br>
+  <ion-card>
+    <ion-item>
+      <ion-avatar slot="start" > 
+        <img src="../../../assets/question.svg">
+      </ion-avatar>
+      Aide
+      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+
+    </ion-item>
+  </ion-card>
+
+</ion-content>

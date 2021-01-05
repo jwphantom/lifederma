@@ -1,0 +1,26 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>contacts</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-list>
+    <ion-list-header style="font-weight: bold; font-size: 20px;;">
+      Contacts
+    </ion-list-header>
+
+    <ion-item *ngFor="let contact of contacts">
+      <ion-avatar slot="start">
+        <img src="../../../assets/user.svg">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ contact.name }}</h2>
+        <h3>{{ contact.phone }}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
