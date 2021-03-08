@@ -3,12 +3,18 @@
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="order">
       <ion-icon name="briefcase-outline"></ion-icon>
-      <ion-label>Commande</ion-label>
+      <ion-badge *ngIf="badge >= 1" color="danger">{{badge}}</ion-badge>
+      <ion-label>Commandes</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="product">
       <ion-icon name="file-tray-stacked-outline"></ion-icon>
-      <ion-label>Produit</ion-label>
+      <ion-label>Produits</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="report">
+      <ion-icon name="clipboard-outline"></ion-icon>      
+      <ion-label>Rapports</ion-label>
     </ion-tab-button>
 
 

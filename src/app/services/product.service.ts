@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import{ GlobalConstants } from '../common/global-constants';
+import { CatProduct } from '../models/catproduct';
 
 
 @Injectable({
@@ -20,6 +21,9 @@ export class ProductService {
   produit: Product[] = [];
   productSubject = new Subject<Product[]>();
 
+  catproduit: CatProduct[] = [];
+  catproductSubject = new Subject<CatProduct[]>();
+
 
   constructor(protected http: HttpClient,
     private socket: Socket,
@@ -29,6 +33,26 @@ export class ProductService {
 
   emitProduct() {
     this.productSubject.next(this.produit);
+  }
+
+  emitCatProduct() {
+    this.catproductSubject.next(this.catproduit);
+  }
+
+  getCatProduct() {
+    this.http
+      .get<any[]>(`${GlobalConstants.apiURL}/cat-product/all`)
+      .subscribe(
+        (response) => {
+
+          this.catproduit = response;
+          this.emitCatProduct();
+
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+        );      
   }
 
   getProduct() {
@@ -46,6 +70,24 @@ export class ProductService {
         }
         );      
   }
+
+  getProductByCat(catid) {
+    console.log(catid);
+    this.http
+      .get<any[]>(`${GlobalConstants.apiURL}/product/category/${catid}`)
+      .subscribe(
+        (response) => {
+
+          this.produit = response;
+          this.emitProduct();
+
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+        );      
+  }
+
 
   delProduct(id) {
 

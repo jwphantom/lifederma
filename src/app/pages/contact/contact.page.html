@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button color="primary" defaultHref="/tabs/settings/help"></ion-back-button>
+    </ion-buttons>
+    <ion-title>contact</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" 
+        ion-button
+        full
+        (click)="sendEmail()"
+        [disabled]="sendMailOk"
+        >    
+        Suivant
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <br>
+  <div class="title_bef_card">
+    Veuillez décrire votre problème
+  </div>
+  <ion-textarea (ionChange)="contentArea($event)" [(ngModel)]="content" class="text-area"></ion-textarea>
+
+  <br>
+  <div class="title_bef_card">
+    Ajouter une Image
+  </div>
+
+  <br>
+  <div (click)="captureImage()" class="upload_button">
+    <img src="../../../assets/plus.svg">
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      <img [src]="currentImage" *ngIf="currentImage"/>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

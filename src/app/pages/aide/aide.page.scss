@@ -1,0 +1,45 @@
+
+ion-title h4{
+    font-size: 13px;
+
+}
+
+
+.container-login {
+    width: 90%;
+    padding: 10px;
+    --ion-background-color:white;
+
+}
+
+
+
+
+ion-slide {
+    width: 100%;
+    height: 60%;
+    top: 0px !important;
+}
+
+.after-slide{
+    width: 100%;
+    height: 40%;
+    top: 0px !important;
+    --ion-background-color:white;
+  
+}
+
+
+
+img{
+    width: 50%;
+}
+
+.after-help{
+    text-transform: uppercase;
+    padding-top: 5px;
+    padding-left: 18px;
+    font-weight: 400;
+    color: #a7a7a7;
+    font-size: 13px;
+}

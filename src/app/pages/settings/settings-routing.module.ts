@@ -11,6 +11,18 @@ const routes: Routes = [
   {
     path: 'contacts',
     loadChildren: () => import('../contacts/contacts.module').then( m => m.ContactsPageModule)
+  },
+  {
+    path: 'compte',
+    loadChildren: () => import('../compte/compte.module').then( m => m.ComptePageModule)
+  },
+  {
+    path: 'notifications',
+    loadChildren: () => import('../notifications/notifications.module').then( m => m.NotificationsPageModule)
+  },
+  {
+    path: 'help',
+    loadChildren: () => import('../aide/aide.module').then( m => m.AidePageModule)
   }
 
   

@@ -1,93 +1,129 @@
-<ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="/tabs/product"></ion-back-button>
-      </ion-buttons>
-      <ion-title>Commande</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content>
-    <ion-card class="card-item">
-      <ion-card-header>
-        <ion-card-subtitle>Ajouter une commande</ion-card-subtitle>
-      </ion-card-header>
-  
-      <ion-card-content>
-        <form [formGroup]="orderForm">
-          <div class="form-group">
-            <label for="exampleInputEmail1">Jour de Livraison </label>
-            <input type="date" class="form-control" formControlName="tdate">
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Numero</label>
-            <input type="tel" class="form-control" formControlName="phone">
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Nom Client</label>
-            <input type="text" class="form-control" formControlName="name">
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Quartier</label>
-            <input type="text" class="form-control" formControlName="district">
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Livraison</label>
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-sm">XAF</span>
-              </div>
-              <input type="number" class="form-control" formControlName="livraison" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            </div>
-            
-          </div>
-          <br>
-  
-          <label for="exampleInputEmail1">Produits</label>
-  
-  
-          <div formArrayName="commande">
-            <div *ngFor="let control of getCommandeArray().controls; let i = index">
-              <div class="row">
-                <div class="col-10">
-                  <div class="input-group" [formGroupName]="i">
-                    <input formControlName="qty"  value="1" type="number" class="form-control" id="inlineFormInputGroupUsername">
-                    <ion-select formControlName="product" class=" col-5" style="border: 1px solid #ced4d9 ;background-color: transparent;" >
-                      <ion-select-option *ngFor="let produit of produits" value="{{produit.price}}-{{produit.code}}">{{produit.code}}</ion-select-option>
-                    </ion-select>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/order"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Commande</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-                
-                  </div>
-                </div>
-  
-                <div class="col-2">
-                  <button type="button" class="btn btn-danger" (click)="onRemoveCommande(i)"><ion-icon name="trash-outline"></ion-icon></button>
+<ion-content>
+  <ion-card class="card-item">
+    <ion-card-header>
+      <ion-card-subtitle>Ajouter une commande</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="orderForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Jour de Livraison </label>
+          <input type="date" class="form-control" formControlName="tdate">
+        </div>
+        <br>
+        <div class="form-group">
+
+          <label for="exampleInputEmail1">Numero</label>
+          <input type="tel" class="form-control" (keyup)="onKeyUpEvent($event)" formControlName="phone">
+        </div>
+        <br>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Nom Client</label>
+          <input type="text" class="form-control" formControlName="name">
+        </div>
+        <br>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Quartier</label>
+          <input type="text" class="form-control" formControlName="district">
+        </div>
+        <br>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Livraison</label>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">XAF</span>
+            </div>
+            <input type="number" class="form-control" formControlName="livraison" aria-label="Small"
+              aria-describedby="inputGroup-sizing-sm">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <ion-label>Livreur</ion-label>
+          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" okText="Okay" cancelText="Dismiss" formControlName="livreur">
+            <ion-select-option *ngFor="let liv of livreur" value="{{liv._id}}">
+              {{liv.name}}</ion-select-option>
+          </ion-select>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+          <label for="exampleInputEmail1">Notes</label>
+          <ion-textarea style="border-style: solid; border-color: #e9ecef; border-width : thin;" formControlName="note"
+            placeholder="Notes concernant la commande..."></ion-textarea>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+          <ion-label>Canal</ion-label>
+          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" value="Facebook" okText="Okay" cancelText="Dismiss" formControlName="canal">
+            <ion-select-option value="Facebook">Facebook</ion-select-option>
+            <ion-select-option value="Appel">Appel</ion-select-option>
+            <ion-select-option value="WhatsApp">WhatsApp</ion-select-option>
+          </ion-select>
+        </div>
+
+        <br>
+
+
+
+        <label for="exampleInputEmail1">Produits</label>
+
+
+        <div formArrayName="commande">
+          <div *ngFor="let control of getCommandeArray().controls; let i = index">
+            <div class="row">
+              <div class="col-10">
+                <div class="input-group" [formGroupName]="i">
+                  <input formControlName="qty" value="1" type="number" class="form-control"
+                    id="inlineFormInputGroupUsername">
+                  <ion-select formControlName="product" class=" col-5"
+                    style="border: 1px solid #ced4d9 ;background-color: transparent;">
+                    <ion-select-option *ngFor="let produit of produits" value="{{produit.price}}-{{produit.code}}">
+                      {{produit.code}}</ion-select-option>
+                  </ion-select>
+
+
                 </div>
               </div>
-              <br>
-  
+
+              <div class="col-2">
+                <button type="button" class="btn btn-danger" (click)="onRemoveCommande(i)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
             </div>
-  
-  
-  
+            <br>
+
           </div>
-  
-          <br>
-  
-        
-          <button class="btn btn-dark col-12" ion-button full (click)="onAddCommande()">Autre(s) produit(s)?</button>
-  
-          <br>
-          <br>
-          <button class="btn btn-life col-12" ion-button full (click)="onSubmitForm()" [disabled]="orderForm.invalid">
-            Valider
-          </button>
-  
-        </form>
-      </ion-card-content>
-    </ion-card>
-  </ion-content>
+
+
+
+        </div>
+
+        <br>
+
+        <button class="btn btn-dark col-12" ion-button full (click)="onAddCommande()">Autre(s) produit(s)?</button>
+
+        <br>
+        <br>
+        <button class="btn btn-life col-12" ion-button full (click)="onSubmitForm()" [disabled]="orderForm.invalid">
+          Valider
+        </button>
+
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

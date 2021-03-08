@@ -1,0 +1,205 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="header" *ngIf="addOrderAccess" (click)="selectLivreur()">{{nLivreur}} <ion-icon name="caret-down-outline"></ion-icon></ion-title>
+    <ion-title class="header" *ngIf="!addOrderAccess">{{user.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-backdrop [visible]="showBackdrop" *ngIf="showBackdrop">
+  </ion-backdrop>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+
+        <ion-button (click)="sDateModal()" color="light">{{sDateFrench}}</ion-button>
+
+      </div>
+      <div class="col-6" style="text-align: end;">
+        <ion-button (click)="generate(sDateRadio)" color="dark">Génerer</ion-button>
+      </div>
+    </div>
+  </div>
+  <br>
+  <ion-card *ngIf="DisplayReport">
+
+    <ion-card-content>
+
+      <div class="container">
+        <div class="row">
+          <div class="span4">
+            <img src="../../../assets/long-logo.png" class="img-rounded logo">
+            <address>
+              <strong>{{ appname }}.</strong><br>
+              {{localisation}}<br>
+            </address>
+          </div>
+          <div class="span4 well">
+            <table class="invoice-head">
+              <tbody>
+                <tr>
+                  <td><strong>Date : </strong></td>
+                  <td>&nbsp; {{reports[0]}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Nbres de Commande: </strong></td>
+                  <td>&nbsp; {{reports[1]?.length}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Qtité : </strong></td>
+                  <td>&nbsp; <h3 *ngFor="let product of reports[2]" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</h3>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="span8">
+            <h2>Details</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8 well invoice-body">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Clients</th>
+                  <th>Numéro</th>
+                  <th>produit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of reports[1]">
+                  <td>{{ order.name }}</td>
+                  <td>{{ order.phone }}</td>
+                  <td>
+                    <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td><strong>Total</strong></td>
+                  <td><strong>{{devise}} {{ reports[3] }}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8 well invoice-thank">
+            <h5 style="text-align:center;">Thank You!</h5>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="span3">
+            <strong>Auteur:</strong> {{ reports[4] }}
+          </div>
+        </div>
+      </div>
+
+    </ion-card-content>
+
+
+  </ion-card>
+
+
+</ion-content>
+
+
+<div class="sDate-pane">
+  <h3 class="titlePanel">Plages prédéfinies</h3>
+  <div class="content" hide-on-bottom>
+    <ion-list>
+      <ion-radio-group class="selectDate" name="selectDateGroup"  value="{{ sDateRadio}}" 
+        #selectDateGroup>
+        <ion-item lines="none" (ionFocus)="selectDay()">
+          <ion-label>
+            Aujourd'hui <br>
+            <p>{{today | date:'dd MMMM'}}</p>
+
+          </ion-label>
+
+          <ion-radio mode="md" slot="end" color="primary" value="today"></ion-radio>
+        </ion-item>
+
+        <ion-item lines="none" (ionFocus)="selectYesterday()">
+          <ion-label>
+            Hier <br>
+            <p>{{yesterday | date:'dd MMMM'}}</p>
+
+          </ion-label>
+          <ion-radio mode="md" slot="end" color="primary" value="yesterday"></ion-radio>
+        </ion-item>
+
+        <ion-item lines="none" (ionFocus)="selectWeek()">
+          <ion-label>
+            Cette Semaine <br>
+            <p>{{week[0] | date:'dd MMMM'}} - {{week[1] | date:'dd MMMM'}}</p>
+
+          </ion-label>
+          <ion-radio mode="md" slot="end" color="primary" value="week"></ion-radio>
+        </ion-item>
+
+        <ion-item lines="none" (ionFocus)="selectMonth()">
+          <ion-label>
+            Ce Mois <br>
+            <p>{{month[0] | date:'dd MMMM'}} - {{month[1] | date:'dd MMMM'}}</p>
+          </ion-label>
+          <ion-radio mode="md" slot="end" color="primary" value="month"></ion-radio>
+        </ion-item>
+
+        <ion-item lines="none" (ionFocus)="selectParticular()">
+          <ion-label>Plage de dates personnalisée</ion-label>
+          <ion-radio mode="md" slot="end" color="primary" value="particular"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </ion-list>
+  </div>
+</div>
+
+
+<div class="sDateParticular">
+  <h3 class="titlePanel" style="text-align: center;">Plages de dates personnalisée </h3>
+  <div class="content" hide-on-bottom>
+
+    <ion-row>
+      <ion-col class="dateRageTitleStart">
+        {{range.value.start | date:'dd MMMM'}}<br>
+        <span>{{range.value.start | date:'yyyy'}}</span>
+        <h4>{{range.value.start | date:'EEEE'}}</h4>
+      </ion-col>
+      <ion-col class="dateRageTitleMiddle">
+        à
+      </ion-col>
+      <ion-col class="dateRageTitleEnd">
+        {{range.value.end | date:'dd MMMM'}}<br>
+        <span>{{range.value.end | date:'yyyy'}}</span>
+        <h4>{{range.value.end | date:'EEEE'}}</h4>
+      </ion-col>
+    </ion-row>
+    <div style="text-align: center;">
+      <mat-form-field appearance="fill" class="col-12" >
+        <mat-label>Entrer la plage</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="Start date">
+          <input matEndDate formControlName="end" placeholder="End date">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+  
+        <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+      </mat-form-field>
+    </div>
+    <ion-row>
+      <ion-button  class="col-12" color="primary" (click)="confirmDateRange()" expand="block">Confimer</ion-button>
+    </ion-row>
+  </div>
+</div>

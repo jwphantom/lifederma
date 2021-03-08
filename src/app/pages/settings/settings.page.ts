@@ -1,4 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { AuthenticationService } from 'src/app/services/authentication-service';
+import { ProfileService } from '../../services/profile.service'
+import { Storage } from '@ionic/storage';
+import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
+import { GlobalConstants } from 'src/app/common/global-constants';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-settings',
@@ -7,9 +16,79 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsPage implements OnInit {
 
-  constructor() { }
+  appname: string = GlobalConstants.appname;
+
+
+  constructor(public authService: AuthenticationService,
+    public profileService: ProfileService,
+    private alertCtrl: AlertController,
+    private storage: Storage,
+    public router: Router,
+    private socket: Socket,) { }
+
+  user: any = [];
+
+  c_user: any = [];
+
+
 
   ngOnInit() {
+
   }
+  
+
+  ionViewWillEnter() {
+    const user = this.authService.getUser();
+
+    if (user) {
+      this.socket.emit('user-profile', user.email);
+      this.getUserProfile(user.email).subscribe(user => {
+        this.c_user = [];
+        //console.log(user);
+        this.c_user.push(user['user']);
+        this.user = user['user'];
+
+      });
+    }
+
+  }
+
+  async updateName(): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      subHeader: 'Votre Nom',
+      inputs: [
+        {
+          type: 'text',
+          name: 'fullName',
+          placeholder: 'Votre Nom  Complet',
+          value: this.user.name
+        }
+      ],
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: 'Save',
+          handler: data => {
+            this.profileService.updateName(data.fullName, this.user._id, this.user.email);
+          }
+        }
+      ]
+    });
+    return await alert.present();
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.logout();
+  }
+
+  getUserProfile(email) {
+    let observable = new Observable(observer => {
+      this.socket.on(`get-user-profile-${email}`, (data) => {
+        observer.next(data);
+      });
+    })
+    return observable;
+  }
+
 
 }

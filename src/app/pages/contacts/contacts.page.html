@@ -1,19 +1,25 @@
-<ion-header translucent>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
+      <ion-back-button  color="primary" defaultHref="/tabs/settings"></ion-back-button>
     </ion-buttons>
-    <ion-title>contacts</ion-title>
+    <ion-title >contacts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="presentModal()">
+        <ion-icon name="add-outline"></ion-icon>         
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionChange)="onSearchTerm($event)" placeholder="Search an item"></ion-searchbar>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
   <ion-list>
-    <ion-list-header style="font-weight: bold; font-size: 20px;;">
-      Contacts
-    </ion-list-header>
 
-    <ion-item *ngFor="let contact of contacts">
+    <ion-item *ngFor="let contact of contacts let i = index" routerLink="/tabs/settings/contacts/details/{{contact.phone}}">
       <ion-avatar slot="start">
         <img src="../../../assets/user.svg">
       </ion-avatar>

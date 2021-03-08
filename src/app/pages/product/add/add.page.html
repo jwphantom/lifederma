@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -28,6 +28,14 @@
         <div class="form-group">
           <label for="exampleInputEmail1">Prix du Produit</label>
           <input type="number" class="form-control" formControlName="price" placeholder="5000">
+        </div>
+        <br>
+        <div class="form-group">
+          <ion-label>Catégorie</ion-label>
+          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" okText="Okay" cancelText="Dismiss" formControlName="category">
+            <ion-select-option *ngFor="let cat of category" value="{{cat._id}}">
+              {{cat.name}}</ion-select-option>
+          </ion-select>
         </div>
         <br>
         <button 

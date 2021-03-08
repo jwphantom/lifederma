@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismissSDate()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Selectionner un livreur</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionChange)="onSearchTerm($event)" placeholder="Recherche des Livreur par nom"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-radio-group class="selectDate" value="{{ id }}">
+    <ion-item>
+
+      <ion-label>
+        Tous
+      </ion-label>
+      <ion-radio mode="md" (ionFocus)="radioLivreur()" slot="end" color="primary" value="All"></ion-radio>
+    </ion-item>
+    <ion-item *ngFor="let liv of livreur">
+
+      <ion-label>
+        {{liv.name}}
+      </ion-label>
+
+      <ion-radio mode="md" (ionFocus)="radioLivreur(liv._id,liv.name)" slot="end" color="primary" value="{{liv._id}}">
+      </ion-radio>
+    </ion-item>
+
+  </ion-radio-group>
+
+</ion-content>

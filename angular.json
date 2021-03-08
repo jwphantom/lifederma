@@ -32,6 +32,7 @@
               }
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
               {
                 "input": "src/theme/variables.scss"
               },
@@ -40,9 +41,16 @@
               },
               {
                 "input": "public/css/bootstrap.min.css"
+              },
+              {
+                "input": "node_modules/@fortawesome/fontawesome-free/css/all.css"
               }
             ],
-            "scripts": []
+            "scripts": [
+              {
+                "input": "node_modules/@fortawesome/fontawesome-free/js/all.js"
+              }
+            ]
           },
           "configurations": {
             "production": {
@@ -101,7 +109,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "styles": [],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/purple-green.css"
+            ],
             "scripts": [],
             "assets": [
               {
@@ -131,7 +141,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {

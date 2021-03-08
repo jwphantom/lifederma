@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button color="primary" defaultHref="/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Compte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <br>
+  <div class="card-item2">
+    <ion-item>
+      <ion-col class="ion-text-start">
+        Numéro
+      </ion-col>
+      <ion-col  style="text-align: right; " (click)="updatePhone()" class="" *ngIf="user?.phone">
+        {{user.phone}}
+      </ion-col>
+      <ion-col style="text-align: right; " (click)="updatePhone()" class="" *ngIf="!user?.phone">
+        Not Number
+      </ion-col>
+    </ion-item>
+    <ion-item>
+      <ion-col class="ion-text-start" >
+        Mot de passe
+      </ion-col>
+      <ion-col style="text-align: right; " (click)="updatePassword()" class="" >
+        ***************
+      </ion-col>
+    </ion-item>
+    <ion-item>
+      <ion-col class="ion-text-start" >
+        Poste
+      </ion-col>
+      <ion-col style="text-align: right; "   *ngIf="user?.function">
+        {{user?.function}}
+      </ion-col>
+    </ion-item>
+    <ion-item>
+      <ion-col class="ion-text-start" >
+        Anciennété
+      </ion-col>
+      <ion-col style="text-align: right; "   *ngIf="user?.function">
+        {{user?.dateWork}}
+      </ion-col>
+    </ion-item>
+    
+  </div>
+
+</ion-content>

@@ -1,26 +1,25 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Produits</ion-title>
+    <ion-title class="header">Produits</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <!-- Data to display after skeleton screen -->
-  <div *ngIf="produits">
-    <ion-card *ngFor="let produit of produits" class="card-item">
+  <div *ngIf="category">
+
+    <ion-card *ngFor="let cat of category" class="card-item" (click)="ListProduct(cat.name, cat['_id'])">
 
       <ion-item>
         <ion-avatar slot="start">
-          <img src="../../../assets/skincare.svg">
+          <img src="../../../assets/brand-identity.svg">
         </ion-avatar>
         <ion-label>
           <ion-row>
             <ion-col>
-              <h3>{{ produit.name }}</h3>
+              <h3>{{ cat.name }}</h3>
             </ion-col>
-            <ion-col style="text-align: end;">
-              <h3 style="font-weight: bold;">XAF {{ produit.price }}</h3>
-            </ion-col>
+            
           </ion-row>
           <ion-row>
 
@@ -32,6 +31,7 @@
 
   <!-- Skeleton screen -->
   <div *ngIf="!produits">
+    
     <ion-list>
       <ion-item>
         <ion-thumbnail slot="start">
@@ -85,7 +85,7 @@
     </ion-list>
   </div>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" [routerLink]="['/tabs/product/add']">
+  <ion-fab *ngIf="addOrderAccess" vertical="bottom" horizontal="end" slot="fixed" [routerLink]="['/tabs/product/add']">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../services/authguard';
 import { TabsPage } from './tabs.page';
+
 
 const routes: Routes = [
   {
@@ -14,9 +16,11 @@ const routes: Routes = [
             [
               {
                 path: '',
-                loadChildren: '../pages/order/order.module#OrderPageModule'
+                loadChildren: '../pages/order/order.module#OrderPageModule',
+                
+
               }
-            ]
+            ],canActivate: [AuthGuard]
         },
         {
           path: 'product',
@@ -26,7 +30,17 @@ const routes: Routes = [
                 path: '',
                 loadChildren: '../pages/product/product.module#ProductPageModule'
               }
-            ]
+            ],canActivate: [AuthGuard],
+        },
+        {
+          path: 'report',
+          children:
+            [
+              {
+                path: '',
+                loadChildren: '../pages/report/report.module#ReportPageModule'
+              }
+            ],canActivate: [AuthGuard],
         },
         {
           path: 'settings',
@@ -36,7 +50,7 @@ const routes: Routes = [
                 path: '',
                 loadChildren: '../pages/settings/settings.module#SettingsPageModule'
               }
-            ]
+            ],canActivate: [AuthGuard],
         },
         {
           path: '',

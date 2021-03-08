@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { ProductService } from '../../../services/product.service';
 import { Socket } from 'ngx-socket-io';
 import{ GlobalConstants } from '../../../common/global-constants';
+import { Subscription } from 'rxjs';
+import { CatProduct } from 'src/app/models/catproduct';
 
 
 
@@ -17,6 +19,9 @@ import{ GlobalConstants } from '../../../common/global-constants';
 export class AddPage implements OnInit {
 
   public productForm : FormGroup;
+
+  category = [];
+  categorySubscription: Subscription;
 
 
   constructor(
@@ -30,11 +35,22 @@ export class AddPage implements OnInit {
     private socket: Socket)  
     { }
     
-  
+    storeCategory() {
+      this.categorySubscription = this.productService.catproductSubject.subscribe(
+        (category: CatProduct[]) => {
+          this.category = category;
+        }
+      );
+      this.productService.emitCatProduct();
+    }
+
 
   ngOnInit() {
     this.initform();
+  }
 
+  ionViewWillEnter() {
+    this.storeCategory();
   }
 
   initform(){
@@ -42,6 +58,8 @@ export class AddPage implements OnInit {
       name: ['', Validators.required],
       code: ['', Validators.required],
       price: ['', Validators.required],
+      category: ['', Validators.required],
+
 
     })
   }
@@ -57,7 +75,7 @@ export class AddPage implements OnInit {
       .subscribe(
         () => {
           this.saveProductToast();
-          this.socket.emit('get-product');
+          //this.socket.emit('get-product');
           this.router.navigate(['/tabs/product']);
           console.log('Enregistrement terminé !');
         },

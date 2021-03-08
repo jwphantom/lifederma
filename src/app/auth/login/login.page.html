@@ -1,0 +1,41 @@
+<ion-content>
+
+  <ion-row class="row1">
+    <ion-col class="img-container">
+    </ion-col>
+</ion-row>
+  
+  <ion-slide>
+      <div class="contaier-login">
+          <ion-grid>
+              <ion-row>
+                  <ion-col>
+                      <h2><img src="../../../assets/long-logo.png"></h2>
+                  </ion-col>
+              </ion-row>
+              <ion-row>
+                  <ion-col>
+                      <ion-list>
+  
+                          <ion-item>
+                              <ion-icon name="person" class="icon-login"></ion-icon>
+                              <ion-input name="user" type="text" #email required placeholder="Email"></ion-input>
+                          </ion-item>
+                          <br />
+                          <ion-item>
+                              <ion-icon name="key" class="icon-login"></ion-icon>
+                              <ion-input name="password" type="password" #password required placeholder="Mot de Passe"></ion-input>
+                          </ion-item>
+  
+                      </ion-list>
+                  </ion-col>
+              </ion-row>
+              <br>
+              <ion-row>
+                  <ion-col>
+                    <button class="btn btn-life col-12" type="submit" (click)="logIn(email, password)" expand="block">Login</button>
+                  </ion-col>
+              </ion-row>
+          </ion-grid>
+      </div>
+  </ion-slide>

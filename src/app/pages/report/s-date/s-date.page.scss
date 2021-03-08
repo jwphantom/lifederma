@@ -1,0 +1,9 @@
+/* DOES NOT WORK - not specific enough */
+.modal-wrapper {
+    background: #222;
+  }
+  
+  /* Works - pass "my-custom-class" in cssClass to increase specificity */
+  .custom-sdate .modal-wrapper {
+    background: #222;
+  }

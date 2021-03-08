@@ -1,0 +1,86 @@
+
+.t_page{
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.content{
+    margin-top: 10px;
+}
+
+.b_search{
+    width: auto;
+    height: 100%;
+}
+
+.searchT {
+   text-align: right;
+}
+
+.sDate-pane{
+    padding-bottom: 20px;
+}
+
+
+.titlePanel{
+    font-weight: 600;
+    text-align: center;
+}
+
+.selectDate ion-item ion-label{
+    font-weight: 600;
+}
+
+.header{
+    text-align: center;  
+    font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    ion-backdrop {
+        opacity: 0.3;
+      }
+
+.sub-title{
+    font-weight: bold;
+    color: black;
+}
+
+.invoice-head td {
+    padding: 0 0px;
+  }
+  .container {
+    padding-top:30px;
+  }
+  .invoice-body{
+    background-color:transparent;
+  }
+  .invoice-thank{
+    margin-top: 20px;
+    padding: 5px;
+  }
+  address{
+    margin-top:15px;
+  }
+
+.logo{
+    width: 40%;
+}
+
+.sDateParticular .content{
+  padding: 0 8px;
+}
+
+.sDateParticular .dateRageTitleStart{
+  font-weight: 600;
+}
+
+.sDateParticular .dateRageTitleMiddle{
+  font-weight: 300;
+  text-align: center;
+}
+
+.sDateParticular .dateRageTitleEnd{
+  font-weight:600;
+  text-align: right;
+}

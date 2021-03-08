@@ -8,6 +8,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { GlobalConstants } from '../common/global-constants';
 import { LoadingController } from '@ionic/angular';
+import { AuthenticationService } from './authentication-service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class OrderService {
     private socket: Socket,
     private router: Router,
     private toastCtrl: ToastController,
+    private authService: AuthenticationService,
     public loadingController: LoadingController) { }
 
 
@@ -40,20 +42,26 @@ export class OrderService {
     this.OrderOneSubject.next(this.orderOne);
   }
 
-  async addOrder(order) {
+  async addOrder(order, notification :boolean) {
 
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
     });
 
+    const user = this.authService.getUser();
+
+    order['view'] = [user.email];
+    
     await loading.present();
     this.http
       .post(`${GlobalConstants.apiURL}/order/add`, order)
       .subscribe(
         () => {
           this.saveOrderToast();
-          this.socket.emit('new-order');
+          if(notification){
+            this.socket.emit('new-order', user.email);
+          }
           this.socket.emit('get-order');
           this.router.navigate(['/tabs/order']);
           loading.dismiss();
@@ -164,6 +172,20 @@ export class OrderService {
         }
       );
 
+  }
+
+  setViewOrder(id, email) {
+    this.http
+      .put(`${GlobalConstants.apiURL}/order/setView/${id}`, {email: email})
+      .subscribe(
+        (response) => {
+          this.socket.emit('refresh-order', email);
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+
+        }
+      );
   }
 
   async Delivered(id) {

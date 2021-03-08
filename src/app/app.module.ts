@@ -12,26 +12,34 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { GlobalConstants } from './common/global-constants';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { DatePipe } from '@angular/common';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
-//import { IonicGestureConfig } from './utils/IonicGestureConfig'
 import { Network } from '@ionic-native/network/ngx';
+import { IonicStorageModule } from '@ionic/storage';
 
-import  * as Hammer from 'hammerjs';
 
-export class  customHammerConfig extends HammerGestureConfig{
-  overrides = {
-    'press': {
-      direction : Hammer.DIRECTION_ALL
-    }
-  }
-}
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
 
-const config: SocketIoConfig = { url: "https://server-scare.herokuapp.com", options: {} };
+import { Camera } from '@ionic-native/camera/ngx';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
+
+import { CallNumber } from '@ionic-native/call-number/ngx';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
+const config: SocketIoConfig = { url: "http://localhost:3001/", options: {} };
+
+//const config: SocketIoConfig = { url: "https://server-scare.herokuapp.com", options: {} };
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,19 +51,26 @@ const config: SocketIoConfig = { url: "https://server-scare.herokuapp.com", opti
     HttpClientModule,
     IonicModule.forRoot(),
     SocketIoModule.forRoot(config),
-    AppRoutingModule],
+    IonicStorageModule.forRoot(),
+    AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule,
+    AngularFireDatabaseModule,
+    AngularFirestoreModule,
+    BrowserAnimationsModule],
   providers: [
     StatusBar,
     SplashScreen,
+    Camera,
+    EmailComposer,
+    InAppBrowser,
     BackgroundMode,
     DatePipe,
     DatePicker,
+    CallNumber,
     Network,
-    {
-      provide: HAMMER_GESTURE_CONFIG,
-      useClass: customHammerConfig
-    },
     LocalNotifications,
+    AngularFirestoreModule,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

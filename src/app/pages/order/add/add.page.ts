@@ -12,6 +12,10 @@ import { OrderService } from '../../../services/order.service';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { asEnumerable } from 'linq-es2015';
 import { DatePipe } from '@angular/common';
+import { ContactService } from 'src/app/services/contact.service';
+import { Storage } from '@ionic/storage';
+import { AuthenticationService } from 'src/app/services/authentication-service';
+import { User } from 'src/app/models/user';
 
 
 @Component({
@@ -23,7 +27,7 @@ export class AddPage implements OnInit {
 
   data: any;
 
-  tdate:string;
+  tdate: string;
 
   currentDate = new Date();
 
@@ -31,6 +35,10 @@ export class AddPage implements OnInit {
 
   produits = [];
   productsSubscription: Subscription;
+
+
+  livreur = [];
+  livreursSubscription: Subscription;
 
 
   public orderForm: FormGroup;
@@ -45,11 +53,14 @@ export class AddPage implements OnInit {
     public http: HttpClient,
     public productService: ProductService,
     private socket: Socket,
-    public orderService : OrderService,
+    public orderService: OrderService,
     private datePicker: DatePicker,
-    private datePipe: DatePipe) { 
+    private datePipe: DatePipe,
+    private contactService: ContactService,
+    private storage: Storage,
+    public authService : AuthenticationService) {
 
-    }
+  }
 
 
   storeProdut() {
@@ -61,27 +72,37 @@ export class AddPage implements OnInit {
     this.productService.emitProduct();
   }
 
+  storeLivreur() {
+    this.livreursSubscription = this.authService.livreurSubject.subscribe(
+      (livreur: User[]) => {
+        this.livreur = livreur;
+      }
+    );
+    this.authService.emitLivreur();
+  }
+
   ngOnInit() {
 
     this.socket.emit('get-product');
     this.socket.on('send-product', () => {
-      this.productService.getProduct()
-
-      this.storeProdut()
-
-
+      this.productService.getProduct();
+      this.storeProdut();
+      this.authService.getLivreur();
+      this.storeLivreur();
     });
 
-   
 
     this.initform();
 
     setTimeout(() => {
-        this.onAddCommande()
+      this.onAddCommande()
     }, 1000);
 
+    this.orderForm.controls['name'].disable();
 
- 
+
+
+
   }
 
 
@@ -90,28 +111,16 @@ export class AddPage implements OnInit {
       tdate: [this.datePipe.transform(this.currentDate, 'yyyy-MM-dd'), Validators.required],
       phone: ['', Validators.required],
       name: ['', Validators.required],
+      note: [''],
+      livreur: [''],
       district: ['', Validators.required],
       livraison: [500, Validators.required],
       montant: '',
+      canal: ['', Validators.required],
       commande: this.formBuilder.array([])
 
 
     })
-  }
-
-  showDatepicker(){
-    this.datePicker.show({
-      date: new Date(),
-      mode: 'date',
-      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK,
-      okText:"Save Date",
-      todayText:"Set Today"
-    }).then(
-      date => {
-        this.tdate = date.getDate()+"/"+date.toLocaleString('default', { month: 'long' })+"/"+date.getFullYear();
-      },
-      err => console.log('Error occurred while getting date: ', err)
-    );
   }
 
 
@@ -133,44 +142,33 @@ export class AddPage implements OnInit {
       MLivraison = MLivraison + price;
 
       control.get('product').setValue(array[1]);
-
     }
-    
+
     this.orderForm.get('montant').setValue(MLivraison);
-
-    //var data = this.orderForm.get('description').value;
-
-    //this.orderForm.get('commande').setValue(this.groupProductOrder(data));
-
-    //delete this.orderForm.value.description;
-
     
-    this.orderService.addOrder(this.orderForm.value);
-    console.log(this.orderForm.value);
+    const date_order = new Date(this.orderForm.get('tdate').value).getTime() / 1000
+    const c_d = new Date(this.datePipe.transform(this.currentDate, 'yyyy-MM-dd')).getTime() / 1000
 
+    if (date_order < c_d) {
+      this.datePassToast();
+    }
+
+    if (date_order > c_d) {
+      this.orderService.addOrder(this.orderForm.value, false);
+    }
+
+    if(date_order == c_d){
+      this.orderService.addOrder(this.orderForm.value, true);    
+}
 
   }
-
-  // groupProductOrder(data) {
-  
-  //   // var linq = Enumerable.asEnumerable(data);
-  //   // var result =
-  //   //   linq.GroupBy(function (x) { return x.product })
-  //   //     .Select(function (x) { return {qty: x.Sum(function (y) { return y.qty | 0; }), product: x.Key() }; })
-  //   //     .ToArray();
-  //   // //console.log(result);
-
-  //   // return result;
-
-
-  // }
 
   onAddCommande() {
 
     const com = this.orderForm.get('commande') as FormArray;
     com.push(this.formBuilder.group({
       qty: [1, Validators.required],
-      product: [this.produits[0].price+"-"+this.produits[0].code, Validators.required]
+      product: [this.produits[0].price + "-" + this.produits[0].code, Validators.required]
     }));
 
   }
@@ -179,6 +177,53 @@ export class AddPage implements OnInit {
     this.getCommandeArray().removeAt(index);
   }
 
+  onKeyUpEvent(event: any) {
+    this.storage.remove('name');
 
+    //this.contactService.getOneContact(event.target.value);
+    this.http
+      .get<any[]>(`${GlobalConstants.apiURL}/contact/details/${event.target.value}`)
+      .subscribe(
+        (response) => {
+          if (event.target.value.length == 9) {
+            this.orderForm.controls['name'].enable();
+            if (response != null) {
+              this.storage.set('name', response['name']);
+
+              this.storage.get('name').then((val) => {
+
+
+              this.orderForm.controls['name'].setValue(val);
+
+              });
+
+            }
+            else {
+              this.orderForm.controls['name'].setValue('');
+            }
+          }
+          else{
+            this.orderForm.controls['name'].setValue('');
+            this.orderForm.controls['name'].disable();
+
+          }
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+          this.orderForm.controls['name'].setValue('');
+
+        }
+      );
+
+  }
+
+    //TOAST CONTROLLER
+    async datePassToast() {
+      const toast = await this.toastCtrl.create({
+        message: 'Date Passé Enregistré',
+        duration: 2000
+      });
+      toast.present();
+    }
 
 }

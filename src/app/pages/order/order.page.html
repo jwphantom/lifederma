@@ -15,59 +15,66 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)"> 
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)"> 
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
       pullingText="Pull to refresh"
       refreshingSpinner="circles">
     </ion-refresher-content> 
-  </ion-refresher>
+  </ion-refresher> -->
 
 
-    <!-- Data to display after skeleton screen -->
-    <div *ngIf="orders">
-      <div *ngIf="segmentModel === 'unCompleted'">
-        <div *ngFor="let order of orders">
-          <div *ngIf="!order.delivered">
+  <!-- Data to display after skeleton screen -->
+  <div *ngIf="orders">
+    <div *ngIf="segmentModel === 'unCompleted'">
+      <div *ngFor="let order of orders">
+        <div
+          *ngIf="!order.delivered && (user._id == order.livreur || user.function == 'CEO' || user.function == 'CM') ">
 
-            <ion-card #cardUncompleted class="card-item">
-              <ion-item>
+          <ion-card *ngIf="getStatutView(order.view);"  #cardUncompleted class="card-item">
+            <ion-item>
 
-                <ion-label>
-                  <ion-row>
-                    <ion-col size="4">
-                      <h3>Nom : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">{{ order.name }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Numero : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">{{ order.phone }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Quartier : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">{{ order.district }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Produit(s) : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
-                        product.product }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Montant : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">XAF {{ order.montant + order.livraison }}</h3>
-                    </ion-col>
-                  </ion-row>
-                  <!-- <ion-row>
+              <ion-label>
+                <ion-row>
+                  <ion-col size="4">
+                    <h3>Nom: </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.name }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Numero : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.phone }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Quartier : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.district }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Produit(s) : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Montant : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">XAF {{ order.montant + order.livraison }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Note : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <p style="white-space: pre-wrap">{{order.note}}</p>
+                  </ion-col>
+                </ion-row>
+                <!-- <ion-row>
                     <ion-col>
                       <ion-button class="col-12" size="small" color="light" routerLink="/tabs/order/edit/{{order._id}}">
                         <ion-icon name="create-outline"></ion-icon>
@@ -87,120 +94,204 @@
 
 
                   </ion-row> -->
-                </ion-label>
-              </ion-item>
-            </ion-card>
-          </div>
+              </ion-label>
+            </ion-item>
+          </ion-card>
+          <ion-card *ngIf="!getStatutView(order.view);" (click)="setView(order._id)" #cardUncompleted >
+            <ion-item>
 
+              <ion-label>
+                <ion-row>
+                  <ion-col size="4">
+                    <h3>Nom: </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.name }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Numero : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.phone }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Quartier : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.district }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Produit(s) : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Montant : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">XAF {{ order.montant + order.livraison }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Note : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <p style="white-space: pre-wrap">{{order.note}}</p>
+                  </ion-col>
+                </ion-row>
+                <!-- <ion-row>
+                    <ion-col>
+                      <ion-button class="col-12" size="small" color="light" routerLink="/tabs/order/edit/{{order._id}}">
+                        <ion-icon name="create-outline"></ion-icon>
+
+                      </ion-button>
+                    </ion-col>
+                    <ion-col>
+                      <ion-button class="col-12" size="small" color="danger" (click)="delOrder(order._id)">
+                        <ion-icon name="trash-outline"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                    <ion-col>
+                      <ion-button class="col-12" size="small" color="success" (click)="delivered(order._id)">
+                        <ion-icon name="checkmark-outline"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+
+
+                  </ion-row> -->
+              </ion-label>
+            </ion-item>
+          </ion-card>
         </div>
-      </div>
-      <div *ngIf="segmentModel === 'completed'">
-        <div *ngFor="let order of orders">
-          <div *ngIf="order.delivered">
 
-            <ion-card class="card-item">
-              <ion-item>
-
-                <ion-label>
-                  <ion-row>
-                    <ion-col size="4">
-                      <h3>Nom : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">{{ order.name }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Numero : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">{{ order.phone }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Quartier : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">{{ order.district }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Produit(s) : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
-                        product.product }}</h3>
-                    </ion-col>
-                    <ion-col size="4">
-                      <h3>Montant : </h3>
-                    </ion-col>
-                    <ion-col size="8">
-                      <h3 style="font-weight: bold;">XAF {{ order.montant + order.livraison }}</h3>
-                    </ion-col>
-                  </ion-row>
-
-                </ion-label>
-              </ion-item>
-            </ion-card>
-          </div>
-
-        </div>
       </div>
     </div>
+    <div *ngIf="segmentModel === 'completed'">
+      <div *ngFor="let order of orders">
+        <div *ngIf="order.delivered">
 
-    <!-- Skeleton screen -->
-    <div *ngIf="!orders">
-      <ion-list>
-        <ion-item>
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text animated></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h3>
-              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-            </p>
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text animated></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h3>
-              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-            </p>
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text animated></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h3>
-              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-            </p>
-          </ion-label>
-        </ion-item>
+          <ion-card class="card-item">
+            <ion-item>
 
-      </ion-list>
+              <ion-label>
+                <ion-row>
+                  <ion-col size="4">
+                    <h3>Nom : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.name }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Numero : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.phone }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Quartier : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">{{ order.district }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Produit(s) : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</h3>
+                  </ion-col>
+                  <ion-col size="4">
+                    <h3>Montant : </h3>
+                  </ion-col>
+                  <ion-col size="8">
+                    <h3 style="font-weight: bold;">XAF {{ order.montant + order.livraison }}</h3>
+                  </ion-col>
+                </ion-row>
+
+              </ion-label>
+            </ion-item>
+          </ion-card>
+        </div>
+
+      </div>
     </div>
-  
-  <ion-fab *ngIf="segmentModel === 'unCompleted'" vertical="bottom" horizontal="end" slot="fixed"
+  </div>
+
+  <!-- Skeleton screen -->
+  <div *ngIf="!orders" class="row">
+
+    <ion-list class="row">
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+
+  <ion-fab *ngIf="segmentModel === 'unCompleted' && addOrderAccess" vertical="bottom" horizontal="end" slot="fixed"
     [routerLink]="['/tabs/order/add']">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>

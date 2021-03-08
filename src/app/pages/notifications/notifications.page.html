@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button color="primary" defaultHref="/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notifications</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <br>
+  <div class="title_bef_card">
+    Notifications des commandes
+  </div>
+  <div class="card-item2">
+    <div *ngFor="let user of c_user">
+      <div *ngFor="let not of user.notification">
+        <ion-item>
+          <ion-label>Afficher les notifications</ion-label>
+          <ion-toggle color="success" slot="end" checked={{not.display}} (ionChange)="enableNotification($event)"
+            checked>
+          </ion-toggle>
+        </ion-item>
+      </div>
+    </div>
+    <ion-item>
+      <ion-col size="8" class="ion-text-start">
+        Son
+      </ion-col>
+      <ion-col size="4" style="text-align: right; ">
+        Accord
+      </ion-col>
+    </ion-item>
+
+  </div>
+
+</ion-content>

@@ -7,11 +7,6 @@
     margin-bottom: 5px;
   }
 
-.card-item{
-  border-style: solid;
-  border-color: #94b817;
-  border-width : thin;
-}
 
 .alertLogCss{
   background-color: white;
@@ -21,4 +16,24 @@
       color: red;
       font-size: 5px;
   }
+}
+
+
+ion-avatar,
+ion-avatar > img{
+    border-radius:0%;
+    height:2rem;
+    width:2rem;
+}
+
+.card-item{
+  border-style: solid;
+    border-color: #94b817;
+    border-width : thin;
+}
+
+.header{
+text-align: center;  
+font-size: 15px;
+  text-transform: uppercase;
 }

@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()">
+        Annuler
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="primary" 
+        ion-button
+        full
+        (click)="onSubmitcontact()"
+        [disabled]="contactForm.invalid">    
+        OK
+      </ion-button>
+    </ion-buttons>  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <br>
+  <ion-row>
+    <ion-col style="text-align: center;">
+      <img src="../../../../assets/user.svg" style="width: 100px;height: 100px;">
+    </ion-col>
+  </ion-row>
+  
+<br>
+  <div class="row">
+    <div class="col-12">
+      <form [formGroup]="contactForm">
+
+      <ion-item>
+        <ion-input type="text" placeholder="Nom et Prenoms"  formControlName="name" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input  type="tel" placeholder="numero" formControlName="phone" ></ion-input>
+      </ion-item>
+      </form>
+    </div>
+  </div>
+</ion-content>

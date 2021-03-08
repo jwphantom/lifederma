@@ -12,6 +12,9 @@ import { OrderService } from '../../../services/order.service';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { DatePipe } from '@angular/common';
 import { Order } from 'src/app/models/order';
+import { Storage } from '@ionic/storage';
+import { AuthenticationService } from 'src/app/services/authentication-service';
+import { User } from 'src/app/models/user';
 
 
 @Component({
@@ -35,6 +38,9 @@ export class EditPage implements AfterViewInit {
 
   orderOne: Order[] = [];
   orderOneSubscription: Subscription;
+
+  livreur = [];
+  livreursSubscription: Subscription;
 
 
   //Select Restore Commande
@@ -65,6 +71,8 @@ export class EditPage implements AfterViewInit {
     private datePicker: DatePicker,
     private datePipe: DatePipe,
     private route: ActivatedRoute,
+    private storage: Storage,
+    public authService : AuthenticationService
   ) {
 
   }
@@ -88,11 +96,19 @@ export class EditPage implements AfterViewInit {
     this.productService.emitProduct();
   }
 
+  storeLivreur() {
+    this.livreursSubscription = this.authService.livreurSubject.subscribe(
+      (livreur: User[]) => {
+        this.livreur = livreur;
+      }
+    );
+    this.authService.emitLivreur();
+  }
+
 
   ngOnInit() {
 
     this.orderId = this.route.snapshot.paramMap.get('id');
-    console.log(this.orderId);
 
 
     this.socket.emit('get-product');
@@ -106,6 +122,9 @@ export class EditPage implements AfterViewInit {
       );
 
       this.productService.emitProduct();
+
+      this.authService.getLivreur();
+      this.storeLivreur();
 
 
     });
@@ -128,7 +147,6 @@ export class EditPage implements AfterViewInit {
         for (let t of this.orderOne['commande']) {
             this.selectRestoreDisplay = true;
             this.selectDisplay = false;
-            this.commande_price = 7000;
             this.commande_code =  t.product ;
             for(let i of this.produits){
               if(i.code == t.product ){
@@ -147,6 +165,9 @@ export class EditPage implements AfterViewInit {
       tdate: [order.tdate, Validators.required],
       phone: [order.phone, Validators.required],
       name: [order.name, Validators.required],
+      canal: [order.canal, Validators.required],
+      livreur: [order.livreur, Validators.required],
+      note: [order.note],
       district: [order.district, Validators.required],
       livraison: [order.livraison, Validators.required],
       montant: order.montant,
