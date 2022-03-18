@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/order"></ion-back-button>
@@ -23,7 +23,7 @@
         <div class="form-group">
 
           <label for="exampleInputEmail1">Numero</label>
-          <input type="tel" class="form-control" (keyup)="onKeyUpEvent($event)" formControlName="phone">
+          <input type="tel" class="form-control" (keyup)="searchName($event)" formControlName="phone">
         </div>
         <br>
         <div class="form-group">
@@ -50,7 +50,8 @@
 
         <div class="form-group">
           <ion-label>Livreur</ion-label>
-          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" okText="Okay" cancelText="Dismiss" formControlName="livreur">
+          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" okText="Okay"
+            cancelText="Dismiss" formControlName="livreur">
             <ion-select-option *ngFor="let liv of livreur" value="{{liv._id}}">
               {{liv.name}}</ion-select-option>
           </ion-select>
@@ -60,15 +61,17 @@
 
         <div class="form-group">
           <label for="exampleInputEmail1">Notes</label>
-          <ion-textarea style="border-style: solid; border-color: #e9ecef; border-width : thin;" formControlName="note"
-            placeholder="Notes concernant la commande..."></ion-textarea>
+          <ion-textarea
+            style="border-style: solid; border-color: #e9ecef; border-width : thin; padding-left: 4px; padding-right: 4px;"
+            formControlName="note" placeholder="Notes concernant la commande..."></ion-textarea>
         </div>
 
         <br>
 
         <div class="form-group">
           <ion-label>Canal</ion-label>
-          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" value="Facebook" okText="Okay" cancelText="Dismiss" formControlName="canal">
+          <ion-select style="border-style: solid; border-color: #e9ecef; border-width : thin;" value="Facebook"
+            okText="Okay" cancelText="Dismiss" formControlName="canal">
             <ion-select-option value="Facebook">Facebook</ion-select-option>
             <ion-select-option value="Appel">Appel</ion-select-option>
             <ion-select-option value="WhatsApp">WhatsApp</ion-select-option>

@@ -7,6 +7,8 @@ import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 import { GlobalConstants } from 'src/app/common/global-constants';
 import { Observable } from 'rxjs';
+import { InAppBrowser , InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { PathService } from 'src/app/services/path.service';
 
 
 @Component({
@@ -24,7 +26,9 @@ export class SettingsPage implements OnInit {
     private alertCtrl: AlertController,
     private storage: Storage,
     public router: Router,
-    private socket: Socket,) { }
+    private socket: Socket,
+    private iab: InAppBrowser,
+    public path : PathService) { }
 
   user: any = [];
 
@@ -33,7 +37,7 @@ export class SettingsPage implements OnInit {
 
 
   ngOnInit() {
-
+    console.log(this.path.previousPath)
   }
   
 
@@ -89,6 +93,15 @@ export class SettingsPage implements OnInit {
     })
     return observable;
   }
+
+  openUrl(url : string){
+    const options : InAppBrowserOptions= {
+       zoom : 'no'
+    }
+    const browser = this.iab.create(url, '_self', options); 
+  }
+
+
 
 
 }

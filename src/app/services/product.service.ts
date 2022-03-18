@@ -1,13 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
 import { Socket } from 'ngx-socket-io';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import{ GlobalConstants } from '../common/global-constants';
 import { CatProduct } from '../models/catproduct';
+import { Storage } from  '@ionic/storage';
 
 
 @Injectable({
@@ -28,6 +29,8 @@ export class ProductService {
   constructor(protected http: HttpClient,
     private socket: Socket,
     private router: Router,
+    public loadingCtrl: LoadingController,
+    public storage: Storage,
     private toastCtrl: ToastController) { }
 
 
@@ -39,9 +42,62 @@ export class ProductService {
     this.catproductSubject.next(this.catproduit);
   }
 
-  getCatProduct() {
+
+  async addProduct(product){
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
+    const loading = await this.loadingCtrl.create({
+      cssClass: 'my-custom-class',
+      message: 'Veuillez patienter',
+    });
+
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/cat-product/all`)
+      .post(`${GlobalConstants.apiURL}/product/add`, product, header)
+      .subscribe(
+        () => {
+          this.saveProductToast();
+          this.router.navigate(['/tabs/product']);
+          console.log('Enregistrement terminé !');
+          loading.dismiss();
+
+        },
+        (error) => {
+          this.ImpossiblesaveProductToast();
+          console.log('Erreur ! : ' + error);
+          loading.dismiss();
+
+        }
+      );
+
+
+
+  }
+
+
+  async getCatProduct() {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
+    this.http
+      .get<any[]>(`${GlobalConstants.apiURL}/product/cat-product/all`,header)
       .subscribe(
         (response) => {
 
@@ -55,9 +111,20 @@ export class ProductService {
         );      
   }
 
-  getProduct() {
+  async getProduct() {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/product/all`)
+      .get<any[]>(`${GlobalConstants.apiURL}/product/all`,header)
       .subscribe(
         (response) => {
 
@@ -71,10 +138,19 @@ export class ProductService {
         );      
   }
 
-  getProductByCat(catid) {
-    console.log(catid);
+  async getProductByCat(catid) {
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/product/category/${catid}`)
+      .get<any[]>(`${GlobalConstants.apiURL}/product/category/${catid}`,header)
       .subscribe(
         (response) => {
 
@@ -89,10 +165,19 @@ export class ProductService {
   }
 
 
-  delProduct(id) {
+  async delProduct(id) {
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
 
     this.http
-      .delete(`${GlobalConstants.apiURL}/product/del/${id}`)
+      .delete(`${GlobalConstants.apiURL}/product/del/${id}`, header)
       .subscribe(
         (response) => {
 
@@ -109,10 +194,19 @@ export class ProductService {
 
   }
 
-  updateProduct(id,product) {
+  async updateProduct(id,product) {
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
 
     this.http
-      .put(`${GlobalConstants.apiURL}/product/edit/${id}`, product)
+      .put(`${GlobalConstants.apiURL}/product/edit/${id}`, product, header)
       .subscribe(
         (response) => {
 
@@ -170,6 +264,22 @@ export class ProductService {
   async editProductToast() {
     const toast = await this.toastCtrl.create({
       message: 'Modification Reussi',
+      duration: 2000
+    });
+    toast.present();
+  }
+
+  async saveProductToast() {
+    const toast = await this.toastCtrl.create({
+      message: 'Produit Enregistré',
+      duration: 2000
+    });
+    toast.present();
+  }
+
+  async ImpossiblesaveProductToast() {
+    const toast = await this.toastCtrl.create({
+      message: 'Enregistrement Impossible',
       duration: 2000
     });
     toast.present();

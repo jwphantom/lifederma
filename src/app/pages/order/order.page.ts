@@ -12,6 +12,10 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
 import { Storage } from '@ionic/storage';
 import { AuthenticationService } from 'src/app/services/authentication-service';
 import { Observable } from 'rxjs';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+
+import { InAppBrowser , InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { PathService } from 'src/app/services/path.service';
 
 
 
@@ -21,6 +25,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./order.page.scss'],
 })
 export class OrderPage implements AfterViewInit {
+
+  public tests = new Array(20);
+
 
   timer = 0;
   preventSimpleClick = false;
@@ -37,9 +44,9 @@ export class OrderPage implements AfterViewInit {
 
   ordersSubscription: Subscription;
 
-  segmentModel = "unCompleted";
+  segmentModel = "uncompleted";
 
-
+  orderTabs = "uncompleted";
 
   @ViewChildren("cardUncompleted", { read: ElementRef }) cards: QueryList<ElementRef>;
   loadingPressActive = false;
@@ -48,8 +55,6 @@ export class OrderPage implements AfterViewInit {
   viewOrder: boolean = false;
 
   el: ElementRef;
-
-
 
 
   constructor(
@@ -66,12 +71,16 @@ export class OrderPage implements AfterViewInit {
     private storage: Storage,
     private elementRef: ElementRef,
     private authService: AuthenticationService,
+    private socialSharing: SocialSharing,
+    private iab: InAppBrowser,
+    public path : PathService
 
   ) { }
 
   ngOnInit() {
-
     const user = this.authService.getUser();
+
+    this.socket.emit('get-count-badge',user.email);
 
     this.socket.on('send-order', () => {
       this.storeOrder();
@@ -96,19 +105,25 @@ export class OrderPage implements AfterViewInit {
 
   }
 
+
   ionViewWillEnter() {
+
     this.storeOrder();
-    this.grantAccess()
+    this.grantAccess();
+    this.localNotifications.clearAll();
+
 
   }
+
 
   storeOrder() {
     this.orderService.getOrder()
     const user = this.authService.getUser();
 
     this.ordersSubscription = this.orderService.OrderSubject.subscribe(
-      (orders: Order[]) => {
+      async (orders: Order[]) => {
         this.orders = orders;
+
       }
     );
     this.orderService.emitOrder();
@@ -152,7 +167,6 @@ export class OrderPage implements AfterViewInit {
     })
     return observable;
   }
-
 
   sendNotification() {
     const user = this.authService.getUser();
@@ -206,16 +220,14 @@ export class OrderPage implements AfterViewInit {
           this.loadingPressActive = false;
 
           if (this.user.function == "CEO") {
-            this.orderMasterActionSheet(uncompleted_order[i]._id, uncompleted_order[i].phone);
+            this.orderMasterActionSheet(uncompleted_order[i]._id, uncompleted_order[i].phone, uncompleted_order[i]);
           }
           if (this.user.function == "Distribution") {
-            this.orderDistributionActionSheet(uncompleted_order[i]._id, uncompleted_order[i].phone);
+            this.orderDistributionActionSheet(uncompleted_order[i]._id, uncompleted_order[i].phone, uncompleted_order[i]);
           }
           if (this.user.function == "CM") {
-            this.orderCMActionSheet(uncompleted_order[i]._id, uncompleted_order[i].phone);
+            this.orderCMActionSheet(uncompleted_order[i]._id, uncompleted_order[i].phone,uncompleted_order[i]);
           }
-
-
 
         }
 
@@ -225,15 +237,15 @@ export class OrderPage implements AfterViewInit {
     }
 
   }
-  s
+  
 
-  async orderMasterActionSheet(id, phone) {
+  async orderMasterActionSheet(id, phone, order) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Que souhaitez-vous effectuer?',
       cssClass: 'my-custom-class',
       buttons: [
         {
-          text: 'Appeler ' + phone + '?',
+          text: 'Appeler',
           icon: 'call-outline',
           handler: () => {
             this.call(phone)
@@ -261,22 +273,37 @@ export class OrderPage implements AfterViewInit {
           icon: 'alert-circle-outline',
           handler: () => {
             actionSheet.dismiss();
-            this.delivered(id)
-          },
+            this.delivered(id, order)
+          }
+        }, {
+          text: 'Partager',
+          icon: 'arrow-redo-outline',
+          handler: () => {
+            actionSheet.dismiss();
+            this.shareOrder(order)
+          }
+        },
 
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
         }
       ]
     });
     await actionSheet.present();
   }
 
-  async orderDistributionActionSheet(id, phone) {
+  async orderDistributionActionSheet(id, phone, order) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Que souhaitez-vous effectuer?',
       cssClass: 'my-custom-class',
       buttons: [
         {
-          text: 'Appeler ' + phone + '?',
+          text: 'Appeler',
           icon: 'call-outline',
           handler: () => {
             this.call(phone)
@@ -287,22 +314,37 @@ export class OrderPage implements AfterViewInit {
           icon: 'alert-circle-outline',
           handler: () => {
             actionSheet.dismiss();
-            this.delivered(id)
-          },
-
+            this.delivered(id, order)
+          }
+        },
+        {
+          text: 'Partager',
+          icon: 'arrow-redo-outline',
+          handler: () => {
+            actionSheet.dismiss();
+            this.shareOrder(order)
+          }
+        },
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
         }
       ]
     });
     await actionSheet.present();
   }
 
-  async orderCMActionSheet(id, phone) {
+  async orderCMActionSheet(id, phone,order) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Que souhaitez-vous effectuer?',
       cssClass: 'my-custom-class',
       buttons: [
         {
-          text: 'Appeler ' + phone + '?',
+          text: 'Appeler',
           icon: 'call-outline',
           handler: () => {
             this.call(phone)
@@ -314,8 +356,23 @@ export class OrderPage implements AfterViewInit {
           handler: () => {
             actionSheet.dismiss();
             this.updateOrder(id)
-          },
-
+          }
+        },
+        {
+          text: 'Partager',
+          icon: 'arrow-redo-outline',
+          handler: () => {
+            actionSheet.dismiss();
+            this.shareOrder(order)
+          }
+        },
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
         }
       ]
     });
@@ -355,7 +412,7 @@ export class OrderPage implements AfterViewInit {
     this.router.navigate(['/tabs/order/edit', order]);
   }
 
-  async delivered(id) {
+  async delivered(id, order) {
 
     const alert = await this.alertCtrl.create({
       header: 'Statut de la Commande!',
@@ -370,7 +427,14 @@ export class OrderPage implements AfterViewInit {
         {
           text: 'Non',
           handler: () => {
-            this.orderService.NotDelivered(id);
+            this.wMotif(order._id, order);
+            //this.orderService.NotDelivered(id);
+          }
+        },
+        {
+          text: 'Renvoyé',
+          handler: () => {
+            this.rOrder(id, order);
           }
         },
         {
@@ -388,6 +452,54 @@ export class OrderPage implements AfterViewInit {
 
   }
 
+  async rOrder(id, order): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      header: 'Modification',
+      inputs: [
+        {
+          type: 'date',
+          name: 'tdate',
+          min: order.tdate,
+          placeholder: '',
+          value: order.tdate
+        }
+      ],
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: 'Save',
+          handler: data => {
+            this.orderService.rOder(id, data);
+          }
+        }
+      ]
+    });
+    return await alert.present();
+  }
+
+  async wMotif(id, order): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      inputs: [
+        {
+          type: 'text',
+          name: 'motif',
+          placeholder: 'Motif',
+        }
+      ],
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: 'Save',
+          handler: data => {
+            this.orderService.NotDelivered(id, data);
+          }
+        }
+      ]
+    });
+    return await alert.present();
+  }
+
+
   doRefresh() {
     document.location.reload();
   }
@@ -400,9 +512,6 @@ export class OrderPage implements AfterViewInit {
   }
 
 
-  segmentChanged(ev: any) { }
-
-
 
   setView(id) {
     this.orderService.setViewOrder(id, this.user.email)
@@ -410,14 +519,44 @@ export class OrderPage implements AfterViewInit {
 
   getStatutView(view) {
     for (let i = 0; i < view.length; i++) {
-      if (view[i] == this.user.email) {
+      if (view[i].user == this.user.email) {
         return true;
       }
     }
+  }
 
+  shareOrder(order) {
+    let product = '';
+
+    for(let i =0; i<order.commande.length; i++){
+      product += `${order.commande[i].qty}x${order.commande[i].product}\n`    
+    }
+
+    let msg = `#${order.name}\n${order.phone}\n${order.district}\n${product}\n${order.montant + order.livraison}\n${order.note}`;
+
+    this.socialSharing.shareViaWhatsApp(msg).then((res) => {
+      console.log('sharing');
+    }).catch((e) => {
+      // Error!
+    });
 
   }
 
 
+  onTabChange(event: any): void {
+    console.info('onTabChange', event);
+  }
+
+
+  openUrl(url : string){
+    const options : InAppBrowserOptions= {
+       zoom : 'no'
+    }
+    const browser = this.iab.create(url, '_self', options); 
+  }
+
+  tabsOrderChanged(event){
+    console.log(this.orderTabs);
+      }
 
 }

@@ -1,41 +1,107 @@
 <ion-content>
 
-  <ion-row class="row1">
-    <ion-col class="img-container">
-    </ion-col>
-</ion-row>
-  
-  <ion-slide>
-      <div class="contaier-login">
-          <ion-grid>
-              <ion-row>
-                  <ion-col>
-                      <h2><img src="../../../assets/long-logo.png"></h2>
-                  </ion-col>
-              </ion-row>
-              <ion-row>
-                  <ion-col>
-                      <ion-list>
-  
-                          <ion-item>
-                              <ion-icon name="person" class="icon-login"></ion-icon>
-                              <ion-input name="user" type="text" #email required placeholder="Email"></ion-input>
-                          </ion-item>
-                          <br />
-                          <ion-item>
-                              <ion-icon name="key" class="icon-login"></ion-icon>
-                              <ion-input name="password" type="password" #password required placeholder="Mot de Passe"></ion-input>
-                          </ion-item>
-  
-                      </ion-list>
-                  </ion-col>
-              </ion-row>
-              <br>
-              <ion-row>
-                  <ion-col>
-                    <button class="btn btn-life col-12" type="submit" (click)="logIn(email, password)" expand="block">Login</button>
-                  </ion-col>
-              </ion-row>
-          </ion-grid>
-      </div>
-  </ion-slide>
+    <ion-row class="row1">
+        <ion-col class="img-container">
+        </ion-col>
+    </ion-row>
+
+    <ion-slide>
+        <div class="container-login">
+            <ion-grid>
+                <ion-row>
+                    <ion-col>
+                        <img src="../../../assets/logo-lidederma.png" />
+                        <h2>Welcome in to {{ appname }} </h2>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-list>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email</label>
+                                <input #email type="email" name="user" class="form-control" id="exampleInputEmail1"
+                                    aria-describedby="emailHelp" placeholder="Veuillez saisir votre email">
+                            </div>
+                            <br>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="exampleInputEmail1">
+                                        Password
+                                    </label>
+                                </div>
+                                <div class="col-6 label-forgot-password" style="text-align: right;">
+                                    <label routerLink="/forgot-password" for="exampleInputEmail1">
+                                        Forgot Password?
+                                    </label>
+                                </div>
+
+                                <input name="password" type="password" #password class="form-control"
+                                    id="exampleInputEmail1" aria-describedby="emailHelp"
+                                    placeholder="Veuillez saisir votre mot de passe">
+                            </div>
+
+                        </ion-list>
+                        <ion-list>
+                            <button class="btn btn-life col-12" type="submit" (click)="logIn(email, password)"
+                                expand="block">Login <img *ngIf="isclickLogin" src="../../../assets/wait-anime.svg"
+                                    style="width: 20px;" /></button>
+                        </ion-list>
+                    </ion-col>
+                </ion-row>
+
+            </ion-grid>
+        </div>
+    </ion-slide>
+</ion-content>
+
+<!-- 
+<ion-content fullscreen class="ion-padding" scroll-y="false" *ngIf="!authPage">
+    <ion-slides>
+        <ion-slide>
+            <div class="slide">
+                <img src="../../../assets/logo-lidederma.png" />
+                <h2>Bienvenue sur {{ appname }} </h2>
+                <p>
+                    <button (click)="auth()" class="btn btn-primary login">S'inscrire / Se Connecter</button>
+                </p>
+            </div>
+        </ion-slide>
+    </ion-slides>
+</ion-content>
+
+<ion-header class="ion-no-border" *ngIf="authPage">
+    <ion-toolbar>
+
+        <ion-buttons slot="end" class="button-primary">
+            S'inscrire
+        </ion-buttons>
+
+        <ion-buttons slot="start">
+            <ion-buttons slot="start" (click)="close()">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-buttons>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content fullscreen class="ion-padding" scroll-y="false" *ngIf="authPage">
+    <h2>Se Connecter</h2>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Email</label>
+        <input #email type="email" name="user" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+            placeholder="Veuillez saisir votre email">
+    </div>
+    <br>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Mot de Passe</label>
+        <input name="password" type="password" #password class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+            placeholder="Veuillez saisir votre mot de passe">
+    </div>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="logIn(email, password)">
+          <ion-icon name="arrow-forward-circle"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+</ion-content> -->

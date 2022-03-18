@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title class="header" *ngIf="addOrderAccess" (click)="selectLivreur()">{{nLivreur}} <ion-icon name="caret-down-outline"></ion-icon></ion-title>
+    <ion-title class="header" *ngIf="addOrderAccess" (click)="selectLivreur()">{{nLivreur}} <ion-icon
+        name="caret-down-outline"></ion-icon>
+    </ion-title>
     <ion-title class="header" *ngIf="!addOrderAccess">{{user.name}}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -27,7 +29,7 @@
 
     <ion-card-content>
 
-      <div class="container">
+      <div class="container" id="reportpdf" >
         <div class="row">
           <div class="span4">
             <img src="../../../assets/long-logo.png" class="img-rounded logo">
@@ -49,9 +51,13 @@
                 </tr>
                 <tr>
                   <td><strong>Qtité : </strong></td>
-                  <td>&nbsp; <h3 *ngFor="let product of reports[2]" style="font-weight: bold;">{{ product.qty }} x {{
-                      product.product }}</h3>
+                  <td>&nbsp; <p *ngFor="let product of reports[2]" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</p>
                   </td>
+                </tr>
+                <tr>
+                  <td><strong>Montant : </strong></td>
+                  <td><strong>{{devise}} {{ reports[3] }}</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -78,8 +84,8 @@
                   <td>{{ order.name }}</td>
                   <td>{{ order.phone }}</td>
                   <td>
-                    <h3 *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
-                      product.product }}</h3>
+                    <p *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
+                      product.product }}</p>
                   </td>
                 </tr>
                 <tr>
@@ -110,6 +116,14 @@
   </ion-card>
 
 
+  <ion-fab *ngIf="DisplayReport" (click)="shareReport()" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="arrow-redo-outline"></ion-icon>    
+    </ion-fab-button>
+  </ion-fab>
+
+
+
 </ion-content>
 
 
@@ -117,8 +131,7 @@
   <h3 class="titlePanel">Plages prédéfinies</h3>
   <div class="content" hide-on-bottom>
     <ion-list>
-      <ion-radio-group class="selectDate" name="selectDateGroup"  value="{{ sDateRadio}}" 
-        #selectDateGroup>
+      <ion-radio-group class="selectDate" name="selectDateGroup" value="{{ sDateRadio}}" #selectDateGroup>
         <ion-item lines="none" (ionFocus)="selectDay()">
           <ion-label>
             Aujourd'hui <br>
@@ -185,7 +198,7 @@
       </ion-col>
     </ion-row>
     <div style="text-align: center;">
-      <mat-form-field appearance="fill" class="col-12" >
+      <mat-form-field appearance="fill" class="col-12">
         <mat-label>Entrer la plage</mat-label>
         <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
           <input matStartDate formControlName="start" placeholder="Start date">
@@ -193,13 +206,13 @@
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
-  
+
         <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
         <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
       </mat-form-field>
     </div>
     <ion-row>
-      <ion-button  class="col-12" color="primary" (click)="confirmDateRange()" expand="block">Confimer</ion-button>
+      <ion-button class="col-12" color="primary" (click)="confirmDateRange()" expand="block">Confimer</ion-button>
     </ion-row>
   </div>
 </div>

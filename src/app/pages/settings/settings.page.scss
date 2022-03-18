@@ -1,53 +1,111 @@
-
-
-.card-item{
-    --ion-background-color:#f9f9f9;
-    padding: 10px;
-    padding-top: 20px;
+.card-item {
+  --ion-background-color: #f9f9f9;
+  padding-top: 0px;
+  padding-left: 15px;
 }
 
-
-.card-item2{
-    --ion-background-color:#f9f9f9;
+.card-item2 {
+  --ion-background-color: #f9f9f9;
 }
 
-ion-item{
-    --ion-background-color:white;
+ion-item {
+  --ion-background-color: white;
 }
-
 
 ion-avatar,
-ion-avatar > img{
-    border-radius:0%;
-    height:2rem;
-    width:2rem;
+ion-avatar > img {
+  border-radius: 0%;
+  height: 2rem;
+  width: 2rem;
+}
+
+ion-title {
+  --ion-background-color: #f9f9f9;
+  text-align: center;
+}
+
+.footer h4 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.footer {
+  left: 0;
+  bottom: 10px;
+  right: 0;
+  position: fixed;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 13px;
+}
+
+.header {
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  margin: 10px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Add some padding inside the card container */
+
+.avatar {
+  width: 30px;
+  height: 30px;
+}
+
+.it {
+  padding: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon {
+  padding: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.price {
+  padding: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: right;
+}
+
+ion-header ion-toolbar {
+  padding-left: 5px;
+  padding-right: 5px;
+
 }
 
 
+.button-swt1{
+  background-color: #f0f0f0d7;
+  color: #94b817;
+  font-weight: 700;
+  text-align: center;
+ margin : 12px;
+ padding : 3px;
+ border-radius: 5px;
 
-ion-title{
-    --ion-background-color: #f9f9f9;
-    text-align: center;
 }
-
-.footer h4{
-    font-size: 16px;
-    font-weight: bold;
+.button-swt2{
+  background-color: #f0f0f0;
+  color: black;
+  font-weight: 400;
+  text-align: center;
+ margin : 12px;
+ padding : 8px;
+ border-radius: 5px;
 }
-
-.footer{
-    left: 0;
-    bottom: 10px;
-    right: 0;
-    position: fixed;
-    text-align: center;
-    padding-top: 5px ;
-    padding-bottom: 5px;
-    font-size: 13px; 
-}
-
-.header{
-    text-align: left;  
-    font-size: 15px;
-      text-transform: uppercase;
-    }

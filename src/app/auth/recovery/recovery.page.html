@@ -1,0 +1,49 @@
+<ion-content>
+
+  <ion-row class="row1">
+    <ion-col class="img-container">
+    </ion-col>
+  </ion-row>
+
+  <ion-slide>
+    <div class="container-login">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <img src="../../../assets/logo-lidederma.png" />
+            <h2>Reset Password </h2>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <form [formGroup]="recoveryForm">
+
+              <ion-list>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email</label>
+                  <input type="email" formControlName="email" [(ngModel)]="email" class="form-control"
+                    id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Email">
+                </div>
+
+              </ion-list>
+              <ion-list>
+                <button [disabled]="recoveryForm.invalid" (click)="submitForm()" class="btn btn-life col-12"
+                  type="submit" expand="block">Reset
+                  <img *ngIf="isclickLogin" src="../../../assets/wait-anime.svg" style="width: 20px;" /></button>
+              </ion-list>
+            </form>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+      <ion-col class="rem-login">
+        Remenber It ?
+        <label for="link-login" routerLink="/login">Login</label>
+
+      </ion-col>
+
+
+    </div>
+  </ion-slide>
+</ion-content>

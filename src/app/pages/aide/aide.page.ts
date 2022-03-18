@@ -27,15 +27,11 @@ export class AidePage implements OnInit {
 
 
 
-  openTerms(url : string){
-
+  openUrl(url : string){
     const options : InAppBrowserOptions= {
        zoom : 'no'
     }
-
     const browser = this.iab.create(url, '_self', options); 
-
-     
   }
 
 }

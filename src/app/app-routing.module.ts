@@ -14,6 +14,10 @@ const routes: Routes = [
     loadChildren: () => import('./auth/registration/registration.module').then( m => m.RegistrationPageModule)
   },
   {
+    path: 'forgot-password',
+    loadChildren: () => import('./auth/recovery/recovery.module').then( m => m.RecoveryPageModule)
+  },
+  {
     path: 'verify-email',
     loadChildren: () => import('./auth/verify-email/verify-email.module').then( m => m.VerifyEmailPageModule)
   },
@@ -40,7 +44,7 @@ const routes: Routes = [
   {
     path: 'report',
     loadChildren: () => import('./pages/report/report.module').then( m => m.ReportPageModule)
-  },
+  }
 
 ];
 

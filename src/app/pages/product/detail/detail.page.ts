@@ -10,6 +10,7 @@ import { Storage } from '@ionic/storage';
 import { AuthenticationService } from 'src/app/services/authentication-service';
 import { Observable } from 'rxjs';
 import { CatProduct } from 'src/app/models/catproduct';
+import { GlobalConstants } from 'src/app/common/global-constants';
 
 @Component({
   selector: 'app-detail',
@@ -18,6 +19,9 @@ import { CatProduct } from 'src/app/models/catproduct';
 })
 export class DetailPage implements AfterViewInit {
 
+  devise: string = GlobalConstants.devise;
+
+  
   display: boolean = false;
 
 
@@ -57,11 +61,12 @@ export class DetailPage implements AfterViewInit {
     public actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
+    this.produits = [];
+
   }
 
 
   ionViewWillEnter() {
-    console.log(this.cat);
     this.storeProduct();
   }
 

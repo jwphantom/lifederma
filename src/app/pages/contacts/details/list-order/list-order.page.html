@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()">
+        Annuler
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Commandes({{name}})</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let order of orders">
+    <ion-item>
+      <ion-row>
+        <ion-col size="4">
+          Date:
+        </ion-col>
+        <ion-col size="8">
+          <span style="font-weight: bold;">{{ order.tdate }}</span>
+        </ion-col>
+        <ion-col size="4">
+          Quartier :
+        </ion-col>
+        <ion-col size="8">
+          <span style="font-weight: bold;">{{ order.district }}</span>
+        </ion-col>
+        <ion-col size="4">
+          Produit(s) : 
+        </ion-col>
+        <ion-col size="8">
+          <p *ngFor="let product of order.commande" style="font-weight: bold;">{{ product.qty }} x {{
+            product.product }}</p>
+        </ion-col>
+        <ion-col size="4">
+          Montant : 
+        </ion-col>
+        <ion-col size="8">
+          <span style="font-weight: bold;">XAF {{ order.montant + order.livraison }}</span>
+        </ion-col>
+        <ion-col size="4">
+          Note :
+        </ion-col>
+        <ion-col size="8">
+          <p style="white-space: pre-wrap">{{order.note}}</p>
+        </ion-col>
+        <ion-col class="cdate">
+          <ion-button (click)="repeatOrder(order)" color="dark" size="small"><ion-icon name="refresh-outline"></ion-icon></ion-button>
+        </ion-col> 
+      </ion-row>
+    </ion-item>
+  </ion-card>
+
+</ion-content>

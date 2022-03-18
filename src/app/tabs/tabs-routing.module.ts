@@ -23,6 +23,18 @@ const routes: Routes = [
             ],canActivate: [AuthGuard]
         },
         {
+          path: 'contacts',
+          children:
+            [
+              {
+                path: '',
+                loadChildren: '../pages/contacts/contacts.module#ContactsPageModule',
+                
+
+              }
+            ],canActivate: [AuthGuard]
+        },
+        {
           path: 'product',
           children:
             [

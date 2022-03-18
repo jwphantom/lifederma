@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Order } from '../models/order';
 import { Socket } from 'ngx-socket-io';
@@ -9,12 +9,15 @@ import { Router } from '@angular/router';
 import { GlobalConstants } from '../common/global-constants';
 import { LoadingController } from '@ionic/angular';
 import { AuthenticationService } from './authentication-service';
+import { Storage } from  '@ionic/storage';
+import { Badge } from '@ionic-native/badge';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class OrderService {
+
   public ordersList: Order[];
 
 
@@ -25,13 +28,20 @@ export class OrderService {
   orderOne: Order[] = [];
   OrderOneSubject = new Subject<Order[]>();
 
+  orderByCust: Order[] = [];
+  orderByCustSubject = new Subject<Order[]>();
+
+  currentDate = new Date();
+
 
   constructor(protected http: HttpClient,
     private socket: Socket,
     private router: Router,
+    public storage: Storage,
     private toastCtrl: ToastController,
     private authService: AuthenticationService,
-    public loadingController: LoadingController) { }
+    public loadingController: LoadingController,
+   ) { }
 
 
   emitOrder() {
@@ -42,7 +52,21 @@ export class OrderService {
     this.OrderOneSubject.next(this.orderOne);
   }
 
-  async addOrder(order, notification :boolean) {
+  emitOrderByCust() {
+    this.orderByCustSubject.next(this.orderByCust);
+  }
+
+  async addOrder(order, notification: boolean) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
 
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
@@ -51,20 +75,34 @@ export class OrderService {
 
     const user = this.authService.getUser();
 
-    order['view'] = [user.email];
-    
+    order['view'] = {
+      user: user.email,
+      vdate: this.currentDate
+    };
+
+    order['cdate'] = new Date().toString();
+
+
+
     await loading.present();
     this.http
-      .post(`${GlobalConstants.apiURL}/order/add`, order)
+      .post(`${GlobalConstants.apiURL}/order/add`, order,header)
       .subscribe(
         () => {
           this.saveOrderToast();
           if(notification){
             this.socket.emit('new-order', user.email);
+   
+            this.socket.emit('get-order');
+            this.socket.emit('get-count-badge',user.email);
+            this.router.navigate(['/tabs/order']);
+            loading.dismiss();    
+      
           }
-          this.socket.emit('get-order');
-          this.router.navigate(['/tabs/order']);
-          loading.dismiss();
+         
+          //this.badge.increase(1);
+
+          //loading.dismiss();
         },
         (error) => {
           this.ImpossiblesaveOrderToast();
@@ -77,9 +115,21 @@ export class OrderService {
   }
 
 
-  getOrder() {
+
+  async getOrder() {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/order/all`)
+      .get<any[]>(`${GlobalConstants.apiURL}/order/all`,header)
       .subscribe(
         (response) => {
 
@@ -91,14 +141,48 @@ export class OrderService {
           console.log('Erreur ! : ' + error);
         }
       );
-
-
   }
 
-  getOneOrder(id) {
+  async getOrderByCustOrder(phone) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
 
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/order/details/${id}`)
+      .get<any[]>(`${GlobalConstants.apiURL}/order/byCust/${phone}`,header)
+      .subscribe(
+        (response) => {
+          this.orderByCust = response;
+          this.emitOrderByCust();
+
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+      );
+  }
+
+  async getOneOrder(id) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
+    this.http
+      .get<any[]>(`${GlobalConstants.apiURL}/order/details/${id}`,header)
       .subscribe(
         (response) => {
           this.orderOne = response;
@@ -110,12 +194,19 @@ export class OrderService {
         }
       );
 
-    //console.log(this.orderOne);
-
-
   }
 
   async delOrder(id) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
 
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
@@ -125,7 +216,7 @@ export class OrderService {
     await loading.present();
 
     this.http
-      .delete(`${GlobalConstants.apiURL}/order/del/${id}`)
+      .delete(`${GlobalConstants.apiURL}/order/del/${id}`, header)
       .subscribe(
         (response) => {
 
@@ -148,6 +239,16 @@ export class OrderService {
 
   async updateOrder(id, order) {
 
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -156,7 +257,7 @@ export class OrderService {
     await loading.present();
 
     this.http
-      .put(`${GlobalConstants.apiURL}/order/edit/${id}`, order)
+      .put(`${GlobalConstants.apiURL}/order/edit/${id}`, order, header)
       .subscribe(
         (response) => {
           this.editOrderToast();
@@ -174,12 +275,30 @@ export class OrderService {
 
   }
 
-  setViewOrder(id, email) {
+  async setViewOrder(id, email) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
+    let userV = {
+      user: email,
+      vdate: this.currentDate
+    };
+
     this.http
-      .put(`${GlobalConstants.apiURL}/order/setView/${id}`, {email: email})
+      .put(`${GlobalConstants.apiURL}/order/setView/${id}`, { email: userV }, header)
       .subscribe(
         (response) => {
           this.socket.emit('refresh-order', email);
+          this.socket.emit('get-count-badge',email);
+          //this.badge.decrease(1);
         },
         (error) => {
           console.log('Erreur ! : ' + error);
@@ -188,7 +307,53 @@ export class OrderService {
       );
   }
 
+  async rOder(id, data){
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Veuillez patienter',
+    });
+    
+    this.http
+      .put(`${GlobalConstants.apiURL}/order/rOrder/${id}`, data,header)
+      .subscribe(
+        (response) => {
+         
+          this.socket.emit('get-order');
+          this.router.navigate(['/tabs/order']);
+          loading.dismiss();
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+
+        }
+      );
+
+  }
+
+
   async Delivered(id) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -197,7 +362,7 @@ export class OrderService {
     await loading.present();
 
     this.http
-      .put(`${GlobalConstants.apiURL}/order/delivered/${id}`,id)
+      .put(`${GlobalConstants.apiURL}/order/delivered/${id}`, id, header)
       .subscribe(
         (response) => {
 
@@ -216,7 +381,18 @@ export class OrderService {
 
   }
 
-  async NotDelivered(id) {
+  async NotDelivered(id,data) {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -224,8 +400,10 @@ export class OrderService {
     });
     await loading.present();
 
+
+
     this.http
-      .put(`${GlobalConstants.apiURL}/order/not-delivered/${id}`,id)
+      .put(`${GlobalConstants.apiURL}/order/not-delivered/${id}`, data, header)
       .subscribe(
         (response) => {
 
@@ -249,7 +427,7 @@ export class OrderService {
   //TOAST CONTROLLER
   async saveOrderToast() {
     const toast = await this.toastCtrl.create({
-      message: 'Produit Enregistré',
+      message: 'Commande Ajoutée',
       duration: 2000
     });
     toast.present();

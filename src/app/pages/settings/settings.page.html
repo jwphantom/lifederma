@@ -1,71 +1,96 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title slot="start" class="header">Reglages</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="logout()">
-        <ion-icon slot="icon-only" name="log-out"></ion-icon>
-      </ion-button>
+    <ion-buttons *ngIf="path.previousPath" slot="start" (click)="path.routeTo(path.previousPath, '')">
+      <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-buttons>
+    <ion-buttons slot="end" (click)="openUrl('https://tawk.to/LifeDerma')">
+      <ion-icon name="help-circle-outline"></ion-icon>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
   <div class="card-item row">
+    <div *ngFor="let user of c_user" class="col-12">
+      <br>
+      <div *ngIf="user.email" style="font-weight: bold; font-size: 18px;">{{user.email }} </div>
+      <div *ngIf="user.name" style="color: #707b8a; font-size: 14px; padding-top: 5px;" (click)="updateName()">Nom :
+        {{user.name }} <ion-icon name="create-outline"></ion-icon>
+      </div>
+      <div *ngIf="!user.name" style="font-weight: bold; font-size: 20px; " (click)="updateName()">Agent XYZ <ion-icon
+          name="create-outline"></ion-icon>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div *ngFor="let user of c_user" class="col-12">
+      <div *ngIf="user.function" class="button-swt1">{{user.function }} </div>
+    </div>
+  </div>
+
+  <!-- <div class="card-item row">
     <div class="col-12" style="text-align: center;">
       <img src="../../../assets/user.svg" style="width: 100px; height: 100px;">
     </div>
     <div *ngFor="let user of c_user" class="col-12" style="text-align: center;">
       <br>
-      <h2 *ngIf="user.name" style="font-weight: bold; font-size: 20px; " (click)="updateName()">{{user.name }} </h2>
-      <h2 *ngIf="!user.name" style="font-weight: bold; font-size: 20px; " (click)="updateName()">Agent XYZ </h2>
+      <div *ngIf="user.name" style="font-weight: bold; font-size: 20px; " (click)="updateName()">{{user.name }} </div>
+      <div *ngIf="!user.name" style="font-weight: bold; font-size: 20px; " (click)="updateName()">Agent XYZ </div>
 
-      <span *ngIf="user.function">{{user.function}}</span>
     </div>
-  </div>
+  </div> -->
   <br>
 
   <div class="card-item2">
-    <ion-item [routerLink]="['/tabs/settings/contacts']">
-      <ion-avatar slot="start">
-        <img src="../../../assets/contacts.svg">
-      </ion-avatar>
-      <ion-label>
-        <h3>Contacts</h3>
-      </ion-label>
-    </ion-item>
-    <ion-item [routerLink]="['/tabs/settings/compte']">
-      <ion-avatar slot="start">
-        <img src="../../../assets/keys.svg">
-      </ion-avatar>
-      <ion-label>
-        <h3>Compte</h3>
-      </ion-label>
-    </ion-item>
-    <ion-item [routerLink]="['/tabs/settings/notifications']">
-      <ion-avatar slot="start">
-        <img src="../../../assets/bell.svg">
-      </ion-avatar>
-      <ion-label>
-        <h3>Notifications</h3>
-      </ion-label>
-    </ion-item>
-    <ion-item [routerLink]="['/tabs/settings/help']">
-      <ion-avatar slot="start">
-        <img src="../../../assets/lifebouy.svg">
-      </ion-avatar>
-      <ion-label>
-        <h3>Aide</h3>
-      </ion-label>
-    </ion-item>
-  </div>
+    <ion-list>
+      <ion-item lines="none" [routerLink]="['/tabs/settings/compte']">
+        <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+        <ion-label>
+          <p style="color: #707b8a; font-size: 18px; font-weight: 400;">Compte</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" [routerLink]="['/tabs/settings/notifications']">
+        <ion-icon slot="start" name="volume-high-outline"></ion-icon>
+        <ion-label>
+          <p style="color: #707b8a; font-size: 18px; font-weight: 400;">Notifications</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" [routerLink]="['/tabs/settings/help']">
+        <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+        <ion-label>
+          <p style="color: #707b8a; font-size: 18px; font-weight: 400;">Aide</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
 
-  <div class="footer">
-      From
-      <br>
-      <h4>{{appname}}</h4>
-  </div>
 
+    <div *ngIf="user.function" class="button-swt2" (click)="logout()">Deconnexion </div>
+
+
+    <!-- <div class="card" [routerLink]="['/tabs/settings/compte']">
+      <div class="container">
+        <div class="icon"><img src="../../../assets/keys.svg" alt="Avatar" class="avatar"></div>
+        <div class="it">Compte
+        </div>
+      </div>
+    </div>
+    <div class="card" [routerLink]="['/tabs/settings/notifications']">
+      <div class="container">
+        <div class="icon"><img src="../../../assets/bell.svg" alt="Avatar" class="avatar"></div>
+        <div class="it">Notifications
+        </div>
+      </div>
+    </div>
+    <div class="card" [routerLink]="['/tabs/settings/help']">
+      <div class="container">
+        <div class="icon"><img src="../../../assets/lifebouy.svg" alt="Avatar" class="avatar"></div>
+        <div class="it">Aide
+        </div>
+      </div>
+    </div> -->
+  </div>
 
 
 </ion-content>

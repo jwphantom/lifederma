@@ -1,8 +1,8 @@
 import { Directive, Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { LoadingController, AlertController, ToastController } from '@ionic/angular';
+import { LoadingController, AlertController, ToastController, ActionSheetController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Socket } from 'ngx-socket-io';
 import { GlobalConstants } from '../../../common/global-constants';
 import { Subject, Subscription } from 'rxjs';
@@ -31,8 +31,6 @@ export class AddPage implements OnInit {
 
   currentDate = new Date();
 
-
-
   produits = [];
   productsSubscription: Subscription;
 
@@ -58,7 +56,10 @@ export class AddPage implements OnInit {
     private datePipe: DatePipe,
     private contactService: ContactService,
     private storage: Storage,
-    public authService : AuthenticationService) {
+    public authService : AuthenticationService,
+    public actionSheetController: ActionSheetController,
+
+    ) {
 
   }
 
@@ -94,17 +95,26 @@ export class AddPage implements OnInit {
 
     this.initform();
 
-    setTimeout(() => {
-      this.onAddCommande()
-    }, 1000);
-
-    this.orderForm.controls['name'].disable();
-
-
+    // setTimeout(() => {
+    //   this.onAddCommande()
+    // }, 1000);
 
 
   }
 
+  ionViewDidLeave(){
+
+  }
+
+  ionViewWillEnter() {
+
+    setTimeout(() => {
+      this.onAddCommande()
+    }, 1000);
+    this.orderForm.controls['name'].disable();
+
+
+  }
 
   initform() {
     this.orderForm = this.formBuilder.group({
@@ -114,7 +124,7 @@ export class AddPage implements OnInit {
       note: [''],
       livreur: [''],
       district: ['', Validators.required],
-      livraison: [500, Validators.required],
+      livraison: [1000, Validators.required],
       montant: '',
       canal: ['', Validators.required],
       commande: this.formBuilder.array([])
@@ -163,6 +173,9 @@ export class AddPage implements OnInit {
 
   }
 
+
+
+
   onAddCommande() {
 
     const com = this.orderForm.get('commande') as FormArray;
@@ -177,26 +190,31 @@ export class AddPage implements OnInit {
     this.getCommandeArray().removeAt(index);
   }
 
-  onKeyUpEvent(event: any) {
+  async searchName(event: any) {
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+    
     this.storage.remove('name');
 
     //this.contactService.getOneContact(event.target.value);
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/contact/details/${event.target.value}`)
+      .get<any[]>(`${GlobalConstants.apiURL}/contact/details/${event.target.value}`,header)
       .subscribe(
         (response) => {
           if (event.target.value.length == 9) {
             this.orderForm.controls['name'].enable();
             if (response != null) {
               this.storage.set('name', response['name']);
-
               this.storage.get('name').then((val) => {
-
-
               this.orderForm.controls['name'].setValue(val);
-
               });
-
             }
             else {
               this.orderForm.controls['name'].setValue('');
@@ -205,7 +223,6 @@ export class AddPage implements OnInit {
           else{
             this.orderForm.controls['name'].setValue('');
             this.orderForm.controls['name'].disable();
-
           }
         },
         (error) => {
@@ -225,5 +242,7 @@ export class AddPage implements OnInit {
       });
       toast.present();
     }
+
+    
 
 }

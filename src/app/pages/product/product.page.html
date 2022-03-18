@@ -1,6 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title class="header">Produits</ion-title>
+    <ion-title>
+      Produits
+    </ion-title>
+    <ion-buttons slot="start" (click)="path.routeTo('/tabs/settings', '/tabs/product')">
+      <ion-buttons slot="start">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-buttons>
+    </ion-buttons>
+
+    <ion-buttons slot="end" (click)="openUrl('https://tawk.to/LifeDerma')">
+      <ion-icon name="help-circle-outline"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -17,9 +28,9 @@
         <ion-label>
           <ion-row>
             <ion-col>
-              <h3>{{ cat.name }}</h3>
+              {{ cat.name }}
             </ion-col>
-            
+
           </ion-row>
           <ion-row>
 
@@ -31,7 +42,7 @@
 
   <!-- Skeleton screen -->
   <div *ngIf="!produits">
-    
+
     <ion-list>
       <ion-item>
         <ion-thumbnail slot="start">
@@ -90,5 +101,5 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  
+
 </ion-content>

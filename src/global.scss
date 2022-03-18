@@ -28,7 +28,6 @@
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 
-
   
   /* Works - pass "my-custom-class" in cssClass to increase specificity */
   .custom-sdate .modal-wrapper {
@@ -38,3 +37,6 @@
     display: block; 
   }
 
+  ion-header ion-buttons {
+    font-size: 20px;
+  }

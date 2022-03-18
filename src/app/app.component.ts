@@ -56,9 +56,6 @@ export class AppComponent {
     });
   }
 
-  // applyTheme(theme: string) {
-  //   this.overlayContainer.getContainerElement().classList.add(theme);
-  // }
 
   sendNotification() {
     const user = this.authService.getUser();
@@ -67,12 +64,9 @@ export class AppComponent {
       this.socket.emit('user-profile', user.email);
       this.getUserProfile(user.email).subscribe(user => {
         this.c_user = [];
-        //console.log(user);
         this.c_user = (user['user']);
       });
     }
-
-    //this.socket.emit('new-order');
     this.socket.on('send-notification', email => {
       console.log(user.email)
       if (email['email'] == user.email) {

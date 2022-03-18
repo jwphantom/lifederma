@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -31,15 +31,19 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
-
+import { SMS } from '@ionic-native/sms/ngx';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { SuperTabsModule } from '@ionic-super-tabs/angular';
 
 
+//const config: SocketIoConfig = { url: "http://localhost:3001/", options: {} };
 
-const config: SocketIoConfig = { url: "http://localhost:3001/", options: {} };
-
-//const config: SocketIoConfig = { url: "https://server-scare.herokuapp.com", options: {} };
+const config: SocketIoConfig = { url: "https://server-scare.herokuapp.com", options: {} };
 
 @NgModule({
   declarations: [AppComponent],
@@ -52,6 +56,7 @@ const config: SocketIoConfig = { url: "http://localhost:3001/", options: {} };
     IonicModule.forRoot(),
     SocketIoModule.forRoot(config),
     IonicStorageModule.forRoot(),
+    SuperTabsModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
@@ -68,11 +73,18 @@ const config: SocketIoConfig = { url: "http://localhost:3001/", options: {} };
     DatePipe,
     DatePicker,
     CallNumber,
+    SMS,
     Network,
     LocalNotifications,
     AngularFirestoreModule,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    FileOpener,
+    File,
+    SocialSharing,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+  
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+

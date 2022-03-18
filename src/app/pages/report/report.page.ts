@@ -13,6 +13,12 @@ import { SLivreurPage } from './s-livreur/s-livreur.page';
 import { AuthenticationService } from 'src/app/services/authentication-service';
 import { Socket } from 'ngx-socket-io';
 
+import { LoadingController } from '@ionic/angular';
+import * as jspdf from 'jspdf';
+import domtoimage from 'dom-to-image';
+import { File, IWriteOptions } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 
 @Component({
@@ -171,6 +177,9 @@ export class ReportPage implements OnInit {
     private datePicker: DatePicker,
     private authService: AuthenticationService,
     private socket: Socket,
+    private file: File,
+    private fileOpener: FileOpener,
+    private socialSharing: SocialSharing
 
 
 
@@ -276,12 +285,12 @@ export class ReportPage implements OnInit {
   generate(date: String) {
 
     if (this.sDateRadio == 'today') {
-      this.rService.getReportTo_Ye(this.today,this.nId);
+      this.rService.getReportTo_Ye(this.today, this.nId);
       this.storeReport();
       this.DisplayReport = true;
     }
     if (this.sDateRadio == 'yesterday') {
-      this.rService.getReportTo_Ye(this.yesterday,this.nId);
+      this.rService.getReportTo_Ye(this.yesterday, this.nId);
       this.storeReport();
       this.DisplayReport = true;
 
@@ -290,24 +299,24 @@ export class ReportPage implements OnInit {
     if (this.sDateRadio == 'week') {
       this.DisplayReport = true;
       this.storeReport();
-      this.rService.getReportofDates(this.storeDayOfCWeek(),this.nId);
+      this.rService.getReportofDates(this.storeDayOfCWeek(), this.nId);
 
     }
     if (this.sDateRadio == 'month') {
       this.DisplayReport = true;
       this.storeReport();
-      this.rService.getReportofDates(this.storeDateOfCMonth(),this.nId);
+      this.rService.getReportofDates(this.storeDateOfCMonth(), this.nId);
 
     }
     if (this.sDateRadio == 'particular') {
       this.DisplayReport = true;
       if (this.storeDayOf2Date(this.range.get('start').value, this.range.get('end').value).length == 1) {
 
-        this.rService.getReportOneDate(this.range.get('start').value,this.nId);
+        this.rService.getReportOneDate(this.range.get('start').value, this.nId);
         this.storeReport();
       }
       if (this.storeDayOf2Date(this.range.get('start').value, this.range.get('end').value).length > 1) {
-        this.rService.getReportofDates(this.storeDayOf2Date(this.range.get('start').value, this.range.get('end').value),this.nId);
+        this.rService.getReportofDates(this.storeDayOf2Date(this.range.get('start').value, this.range.get('end').value), this.nId);
         this.storeReport();
 
       }
@@ -389,7 +398,7 @@ export class ReportPage implements OnInit {
   }
 
 
-  async selectLivreur(){
+  async selectLivreur() {
     const modal = await this.modalController.create({
       component: SLivreurPage,
       componentProps: {
@@ -402,9 +411,111 @@ export class ReportPage implements OnInit {
         const user = data['data'];
         this.nLivreur = data['data']['nom'];
         this.nId = data['data']['id'];
-    });
-    
+      });
+
     return await modal.present();
   }
+ 
+  generatePdf() {
+    //this.presentLoading('Creating PDF file...');
+    const div = document.getElementById("reportpdf");
+    const options = { background: 'white', height: 845, width: 595 };
+    domtoimage.toPng(div, options).then((dataUrl) => {
+      //Initialize JSPDF
+      var doc = new jspdf.jsPDF("p", "mm", "a4");
+      //Add image Url to PDF
+      doc.addImage(dataUrl, 'PNG',  0, 0, 250, 250);
+
+
+
+      let pdfOutput = doc.output();
+      // using ArrayBuffer will allow you to put image inside PDF
+      let buffer = new ArrayBuffer(pdfOutput.length);
+      let array = new Uint8Array(buffer);
+      for (var i = 0; i < pdfOutput.length; i++) {
+        array[i] = pdfOutput.charCodeAt(i);
+      }
+
+
+      //This is where the PDF file will stored , you can change it as you like
+      // for more information please visit https://ionicframework.com/docs/native/file/
+      const directory = this.file.dataDirectory;
+      const fileName = 'rapports-'+ this.reports[0]+'-.pdf';
+      let options: IWriteOptions = { replace: true };
+
+      this.file.checkFile(directory, fileName).then((success) => {
+        //Writing File to Device
+        this.file.writeFile(directory, fileName, buffer, options)
+          .then((success) => {
+            //this.loading.dismiss();
+            console.log("File created Succesfully" + JSON.stringify(success));
+            this.fileOpener.open(this.file.dataDirectory + fileName, 'application/pdf')
+              .then(() => console.log('File is opened'))
+              .catch(e => console.log('Error opening file', e));
+          })
+          .catch((error) => {
+            //this.loading.dismiss();
+            console.log("Cannot Create File " + JSON.stringify(error));
+          });
+      })
+        .catch((error) => {
+          //Writing File to Device
+          this.file.writeFile(directory, fileName, buffer)
+            .then((success) => {
+              //this.loading.dismiss();
+              console.log("File created Succesfully" + JSON.stringify(success));
+              this.fileOpener.open(this.file.dataDirectory + fileName, 'application/pdf')
+                .then(() => console.log('File is opened'))
+                .catch(e => console.log('Error opening file', e));
+            })
+            .catch((error) => {
+              //this.loading.dismiss();
+              console.log("Cannot Create File " + JSON.stringify(error));
+            });
+        });
+    })
+      .catch(function (error) {
+        //this.loading.dismiss();
+        console.error('oops, something went wrong!', error);
+      });
+  }
+
+
+  shareReport() {
+    let report = '';
+
+    let qty ='';
+
+    for(let i =0; i<this.reports[1].length; i++){
+      let product = '';
+      for(let j =0; j<this.reports[1][i].commande.length; j++){
+        product += `${this.reports[1][i].commande[j].qty}x${this.reports[1][i].commande[j].product},`    
+      }
+      report += `${i+1}-${this.reports[1][i].name}: ${this.reports[1][i].phone} - ${product}\n`    
+    }
+
+    for(let i =0; i<this.reports[2].length; i++){
+      qty += `(${this.reports[2][i].qty})${this.reports[2][i].product}, `    
+    }
+
+    let msg = 
+`#Rapports des Ventes ${this.reports[0]}
+
+${report}
+Qtité : ${qty}
+
+Montant : *${this.devise} ${this.reports[3]}*
+
+Auteur: ${this.reports[4]}`;
+
+
+    this.socialSharing.shareViaWhatsApp(msg).then((res) => {
+      console.log('sharing');
+    }).catch((e) => {
+      // Error!
+    });
+
+  }
+
 
 }

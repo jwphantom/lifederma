@@ -1,11 +1,117 @@
-.card-item{
-    border-style: solid;
-    border-color: #94b817;
-    border-width : thin;
-  }
 
-  .card-item2{
-    border-style: solid;
-    border-color: red;
-    border-width : thin;
-  }
+.card-item {
+  border-style: solid;
+  border-color: #94b817;
+  border-width: thin;
+}
+
+.card-item2 {
+  border-style: solid;
+  border-color: red;
+  border-width: thin;
+}
+
+ion-col {
+  font-size: 15px;
+}
+
+.cdate {
+  text-align: right;
+  font-size: 12px;
+}
+
+ion-segment {
+  --background: #94b817;
+  border-radius: 0%;
+}
+
+super-tab-button {
+  background-color: #94b817;
+}
+
+ion-icon {
+  font-size: 25px;
+}
+
+super-tabs super-tab-button ion-label {
+  color: white;
+}
+
+super-tabs{
+  background-color: #fafafa;
+}
+
+.order_am{
+  margin: 13px;
+}
+
+.order_am span{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+// super-tabs  {
+//   top: 44px !important;
+//   }
+
+
+
+.cut-diamond {
+  border-style: solid;
+  border-color: transparent transparent #94b817 transparent;
+  border-width: 0 15px 15px 15px;
+  height: 0;
+  width: 10px;
+  box-sizing: content-box;
+  position: relative;
+  margin: 20px 0 50px 0;
+  z-index: 1;
+}
+// .cut-diamond:after {
+//   content: "";
+//   position: absolute;
+//   top: 15px;
+//   left: -15px;
+//   width: 0;
+//   height: 0;
+//   border-style: solid;
+//   border-color: #94b817 transparent transparent transparent;
+//   border-width: 20px 20px 0 20px;
+//   z-index: 1;
+// }
+
+
+.footer-social a {
+  width: 25px;
+  height: 25px;
+  margin: 0 6px;
+  text-align: center;
+  display: inline-block;
+  color: #111;
+  border: 1px solid #111;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  line-height: 25px;
+
+  transition: all 500ms ease;
+}
+.footer-social a ion-icon {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+
+ion-header ion-toolbar {
+  padding-left: 5px;
+  padding-right: 5px;
+
+}
+
+
+ion-segment-button {
+  --color-checked: white;
+}

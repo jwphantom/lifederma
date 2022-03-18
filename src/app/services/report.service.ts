@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -8,6 +8,8 @@ import { GlobalConstants } from '../common/global-constants';
 import { Report } from '../models/report';
 import { AuthenticationService } from './authentication-service';
 import { OrderService } from './order.service';
+import { Storage } from  '@ionic/storage';
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +28,7 @@ export class ReportService {
     private authService: AuthenticationService,
     public loadingController: LoadingController,
     public router: Router,
+    public storage: Storage,
 
   ) { }
 
@@ -36,6 +39,17 @@ export class ReportService {
 
 
   async getReportTo_Ye(date,id){
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -50,7 +64,7 @@ export class ReportService {
     console.log(id);
 
     this.http
-      .post(`${GlobalConstants.apiURL}/report/generate/to_ye`, param)
+      .post(`${GlobalConstants.apiURL}/report/generate/to_ye`, param,header)
       .subscribe(
         (response: Report[]) => {
           this.report = response;
@@ -67,6 +81,16 @@ export class ReportService {
 
 
   async getReportOneDate(date,id){
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -77,7 +101,7 @@ export class ReportService {
     let param = [date,id];
 
     this.http
-      .post(`${GlobalConstants.apiURL}/report/generate/day`, param)
+      .post(`${GlobalConstants.apiURL}/report/generate/day`, param, header)
       .subscribe(
         (response: Report[]) => {
           this.report = response;
@@ -94,6 +118,17 @@ export class ReportService {
 
 
   async getReportofDates(days,id){
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -105,7 +140,7 @@ export class ReportService {
     let param = [days,id];
 
     this.http
-      .post(`${GlobalConstants.apiURL}/report/generate/week`, param)
+      .post(`${GlobalConstants.apiURL}/report/generate/week`, param, header)
       .subscribe(
         (response: Report[]) => {
           this.report = response;

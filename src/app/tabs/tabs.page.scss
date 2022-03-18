@@ -7,21 +7,35 @@ ion-tab-bar {
     
   }
   
-  ion-tab-button {
-    //-color: var(--ion-color-medium);
-    --color-selected: var(--ion-color-primary);
-  
-    &::before {
-      background-color: transparent;
-      display: block;
-      content: "";
-      margin: 0 auto;
-      width: 20px;
-      height: 2px;
-    }
-  
-    &.tab-selected::before {
-      background-color: var(--ion-color-primary);
-    }
+  ion-tabs ion-button{
+    background-color: none;
   }
 
+  .footer-social a {
+    width: 25px;
+    height: 25px;
+    margin: 0 6px;
+    text-align: center;
+    display: inline-block;
+    color: #111;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    line-height: 25px;
+    background-color: #94b817;
+  
+    transition: all 500ms ease;
+  }
+  .footer-social a ion-icon {
+    color: white;
+      -webkit-transform: rotate(-45deg);
+      -moz-transform: rotate(-45deg);
+      -o-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+  }
+  
+
+  .contentPane{
+    padding-top: 15px;
+  }
+  

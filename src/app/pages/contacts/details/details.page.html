@@ -1,7 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" defaultHref="/tabs/settings/contacts"></ion-back-button>
+      <ion-button color="primary" (click)="dismiss()">
+        Retour
+      </ion-button>
     </ion-buttons>
     <ion-title>contacts</ion-title>
     <ion-buttons slot="end">
@@ -13,7 +15,11 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="display">
+
+  <ion-backdrop [visible]="showBackdrop" *ngIf="showBackdrop">
+  </ion-backdrop>
+
+  <div *ngIf="contactOne">
 
   <br>
   <ion-row>
@@ -24,7 +30,7 @@
   <ion-row>
     <ion-col style="text-align: center;">
 
-      <h1 > {{ contactOne['name']}}</h1>
+      <h1 > {{ contactOne['name']  }}</h1>
     </ion-col>
   </ion-row>
   <br>
@@ -34,15 +40,20 @@
       <br>
       <span style="font-size: 12px;" color="primary">Portable</span>
     </ion-col>
-    <ion-col class="card-contact" style="text-align: center;">
+    <ion-col class="card-contact" style="text-align: center;" (click)="SMS(contactOne['phone'])">
       <i class="fas fa-comment" style="color: #94b817;font-size: 20px;"></i>      
       <br>
       <span style="font-size: 12px;" color="primary">Message</span>
     </ion-col>
-    <ion-col class="card-contact" style="text-align: center;">
+    <ion-col class="card-contact" style="text-align: center;" (click)="listOrderCustModal(contactOne['name'])">
       <i class="fas fa-clipboard-list" style="color: #94b817;font-size: 20px;"></i>      
       <br>
       <span style="font-size: 12px;" color="primary">Commande</span>
+    </ion-col>
+    <ion-col class="card-contact" style="text-align: center;" (click)="builkSmsPanel()">
+      <i class="fas fa-sync" style="color: #94b817;font-size: 20px;"></i> 
+      <br>
+      <span style="font-size: 12px;" color="primary">Relance</span>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -56,7 +67,7 @@
   </ion-row>
   </div>
     <!-- Skeleton screen -->
-    <div *ngIf="!display" class="row">
+    <div *ngIf="!contactOne" class="row">
 
       <ion-list class="row">
         <ion-item>
@@ -128,3 +139,12 @@
     </div>
 
 </ion-content>
+
+<div class="builkSmsPane">
+  <h3 class="titlePanel">Message Client({{maxlength}}/157)</h3>
+  <div class="container" hide-on-bottom>
+    <ion-textarea (ionChange)="writeBuilkSms($event)" class="form-control" id="exampleFormControlTextarea1" rows="4" maxlength="160" value="{{ messageRelance }}"></ion-textarea>
+    <br>
+    <ion-button (click)="sendMessage()" [disabled]="sendBuilkActive" type="submit" class="col-12">Envoyer</ion-button>
+  </div>
+</div>

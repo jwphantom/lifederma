@@ -4,8 +4,8 @@
       <ion-back-button color="primary" defaultHref="/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ appname }}
-      <h4>Version {{version}}</h4>
+      {{ appname }}<br>
+      <span>{{ version }}</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -30,7 +30,7 @@
       </ion-col>
     </ion-item>
     <ion-item> 
-      <ion-col (click)="openTerms('https://sudocare.com/pages/politiques-de-confidentialite')">
+      <ion-col (click)="openUrl('https://sudocare.com/pages/politiques-de-confidentialite')">
         Conditions et Politique de Confidentialité
       </ion-col>
     </ion-item>

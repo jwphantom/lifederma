@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.lifederma.erp" version="0.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.lifederma.erp" version="0.4.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>LifeDerma</name>
     <description>ERP LifeDerma Ltd.</description>
-    <author email="sudogen.enterprise@gmail" href="http://www.sbeauty.me">sudocare team</author>
+    <author email="sudogen.enterprise@gmail.com" href="http://www.sbeauty.me">sudocare team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

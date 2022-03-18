@@ -4,11 +4,13 @@ import { User } from "../models/user";
 import { Router } from "@angular/router";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GlobalConstants } from '../common/global-constants';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import emailjs, { EmailJSResponseStatus } from 'emailjs-com';
+import { Storage } from  '@ionic/storage';
+
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,7 @@ export class AuthenticationService {
     public ngZone: NgZone,
     protected http: HttpClient,
     private toastCtrl: ToastController,
+    public storage: Storage,
     public loadingController: LoadingController
   ) {
     this.ngFireAuth.authState.subscribe(user => {
@@ -49,19 +52,35 @@ export class AuthenticationService {
   // Login in with email/password
   SignIn(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
-
   }
+
+  async StoreToken() {
+    this.http
+      .post<any[]>(`${GlobalConstants.apiURL}/user/login`, { email: this.getUser().email })
+      .subscribe(
+        async (res) => {
+          await this.storage.set("ACCESS_TOKEN", res['token']);
+          await this.storage.set("userId", res['userId']);
+          this.router.navigate(['/tabs/order']);         
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+      );
+  }
+
+
 
   // Register user with email/password
   async RegisterUser(email) {
-    var user = { 
+    var user = {
       email: email,
-      function : 'Distribution',
-      notification : {
-        display : true,
-        son : 'file://sound.mp3',
+      function: 'Distribution',
+      notification: {
+        display: true,
+        son: 'file://sound.mp3',
       }
-     };
+    };
 
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
@@ -111,8 +130,19 @@ export class AuthenticationService {
   }
 
   async getLivreur() {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/user/livreur`)
+      .get<any[]>(`${GlobalConstants.apiURL}/user/livreur`, header)
       .subscribe(
         (response) => {
           this.livreur = response;
@@ -219,9 +249,23 @@ export class AuthenticationService {
     return firebase.auth().signOut().then(() => {
       localStorage.removeItem('user');
       localStorage.removeItem('current-user');
+      localStorage.removeItem('ACCESS_TOKEN');
+      localStorage.removeItem('userId');
+
       this.router.navigate(['/login']);
     })
   }
 
+
+  async recoverPassword(email : string){
+
+    return firebase.auth().sendPasswordResetEmail(email)
+      .then(() => {
+        return('Password reset email has been sent, please check your inbox.');
+      }).catch((error) => {
+        return(error)
+      })
+
+  }
 
 }

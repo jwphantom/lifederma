@@ -4,26 +4,63 @@
     <ion-tab-button tab="order">
       <ion-icon name="briefcase-outline"></ion-icon>
       <ion-badge *ngIf="badge >= 1" color="danger">{{badge}}</ion-badge>
-      <ion-label>Commandes</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="product">
-      <ion-icon name="file-tray-stacked-outline"></ion-icon>
-      <ion-label>Produits</ion-label>
+      <ion-icon name="clipboard-outline"></ion-icon>    
     </ion-tab-button>
+
+    <ion-tab-button tab="contacts">
+      <ion-icon name="people-circle-outline"></ion-icon>    
+    </ion-tab-button>
+
+    
+    <!-- <ion-tab-button (click)="sMenuModal()" class="footer-social">
+      <a title="Facebook" target="_blank">
+        <ion-icon name="swap-horizontal-outline"></ion-icon>
+      </a>
+    </ion-tab-button> -->
 
     <ion-tab-button tab="report">
-      <ion-icon name="clipboard-outline"></ion-icon>      
-      <ion-label>Rapports</ion-label>
+      <ion-icon name="clipboard-outline"></ion-icon>
     </ion-tab-button>
 
 
-    <ion-tab-button tab="settings">
+    <!-- <ion-tab-button tab="settings">
       <ion-icon name="settings-outline"></ion-icon>
       <ion-label>Reglages</ion-label>
-    </ion-tab-button>
-
+    </ion-tab-button> -->
 
   </ion-tab-bar>
+  <ion-backdrop [visible]="showBackdrop" *ngIf="showBackdrop">
+  </ion-backdrop>
 
 </ion-tabs>
+<div class="menu">
+  <h3 class="titlePanel"></h3>
+  <div class="contentPane" hide-on-bottom>
+    <ion-list>
+      <ion-item lines="none" (click)="routeTo('product')">
+        <ion-icon slot="start" name="flask-outline"></ion-icon>
+        <ion-label>
+          <p style="color: black; font-size: 20px; font-weight: 700;">Produits</p>
+          <p>Listes de produits par categories</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" (click)="routeTo('contacts')">
+        <ion-icon slot="start" name="people-circle-outline"></ion-icon>
+        <ion-label>
+          <p style="color: black; font-size: 20px; font-weight: 700;">Contacts</p>
+          <p>Bases de données de la cliente LifeDerma</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none" (click)="logout()">
+        <ion-icon slot="start" name="log-in-outline"></ion-icon>
+        <ion-label>
+          <p style="color: black; font-size: 20px; font-weight: 700;">Deconnexion</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</div>

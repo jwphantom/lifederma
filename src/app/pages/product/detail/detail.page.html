@@ -21,10 +21,10 @@
         <ion-label>
           <ion-row>
             <ion-col>
-              <h3>{{ produit.name }}</h3>
+              {{ produit.name }}
             </ion-col>
-            <ion-col style="text-align: end;">
-              <h3 style="font-weight: bold;">XAF {{ produit.price }}</h3>
+            <ion-col style="text-align: end; font-weight: 600;">
+              {{ devise }} {{ produit.price }}
             </ion-col>
           </ion-row>
           <ion-row>

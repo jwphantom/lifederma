@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: DetailsPage
+  },
+  {
+    path: 'list-order',
+    loadChildren: () => import('./list-order/list-order.module').then( m => m.ListOrderPageModule)
   }
 ];
 

@@ -11,7 +11,8 @@ import { AuthenticationService } from 'src/app/services/authentication-service';
 import { Observable } from 'rxjs';
 import { CatProduct } from 'src/app/models/catproduct';
 import { DetailPage } from './detail/detail.page';
-
+import { InAppBrowser , InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { PathService } from 'src/app/services/path.service';
 
 @Component({
   selector: 'app-product',
@@ -37,8 +38,6 @@ export class ProductPage implements AfterViewInit {
 
   c_user: any = [];
 
-  @ViewChildren(IonCard, { read: ElementRef }) cards: QueryList<ElementRef>;
-  loadingPressActive = false;
 
   constructor(public http: HttpClient,
     private socket: Socket,
@@ -48,7 +47,9 @@ export class ProductPage implements AfterViewInit {
     private gestureCtrl: GestureController,
     private authService: AuthenticationService,
     public modalController: ModalController,
-    public actionSheetController: ActionSheetController) { }
+    public actionSheetController: ActionSheetController,
+    private iab: InAppBrowser,
+    public path : PathService) { }
 
   ngOnInit() {
 
@@ -98,15 +99,6 @@ export class ProductPage implements AfterViewInit {
 
   ngAfterViewInit() {
 
-    this.cards.changes.subscribe(() => {
-
-      const cardArray = this.cards.toArray()
-
-      this.useLongPress(cardArray)
-
-
-    });
-
   }
 
   grantAccess() {
@@ -138,118 +130,6 @@ export class ProductPage implements AfterViewInit {
 
 
 
-  useLongPress(cardArray) {
-
-    for (let i = 0; i < cardArray.length; i++) {
-      const card = cardArray[i];
-      const gesture = this.gestureCtrl.create({
-        el: card.nativeElement,
-        gestureName: 'long-press',
-        onStart: ev => {
-          this.loadingPressActive = true;
-        },
-        onEnd: ev => {
-          this.loadingPressActive = false;
-
-          this.optionActionSheet(this.produits[i]._id, this.produits[i]);
-
-        }
-
-      });
-      gesture.enable();
-
-    }
-
-  }
-
-  async optionActionSheet(id, product) {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Supprimer ' + product.code + '?',
-      cssClass: 'my-custom-class',
-      buttons: [{
-        text: 'Supprimer',
-        role: 'destructive',
-        icon: 'trash',
-        handler: () => {
-          this.delProduct(id);
-        }
-      },
-      {
-        text: 'Modifier',
-        icon: 'create-outline',
-        handler: () => {
-          actionSheet.dismiss();
-          this.updateProduct(id, product)
-        }
-      }]
-    });
-    await actionSheet.present();
-  }
-
-
-
-  async delProduct(id) {
-    const alert = await this.alertCtrl.create({
-      header: 'Suppression!',
-      message: 'Voulez-vous Supprimer?',
-      cssClass: 'alertLogCss',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'alertDanger',
-          handler: (blah) => {
-          }
-        }, {
-          text: 'Okay',
-          cssClass: 'alertDanger',
-          handler: () => {
-            this.productService.delProduct(id);
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-
-  async updateProduct(id, produit: Product): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      header: 'Modification',
-      inputs: [
-        {
-          type: 'text',
-          name: 'name',
-          placeholder: 'Nom ',
-          value: produit.name
-        },
-        {
-          type: 'text',
-          name: 'code',
-          placeholder: 'Nom ',
-          value: produit.code
-        },
-        {
-          type: 'text',
-          name: 'price',
-          placeholder: 'Nom ',
-          value: produit.price
-        }
-      ],
-      buttons: [
-        { text: 'Cancel' },
-        {
-          text: 'Save',
-          handler: data => {
-            this.productService.updateProduct(id, data);
-          }
-        }
-      ]
-    });
-    return await alert.present();
-  }
-
   async ListProduct(cat, catId) {
     const modal = await this.modalController.create({
       component: DetailPage,
@@ -264,4 +144,12 @@ export class ProductPage implements AfterViewInit {
   }
 
 
+  openUrl(url : string){
+    const options : InAppBrowserOptions= {
+       zoom : 'no'
+    }
+    const browser = this.iab.create(url, '_self', options); 
+  }
+
+  
 }

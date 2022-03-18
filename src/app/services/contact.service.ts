@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
@@ -41,9 +41,20 @@ export class ContactService {
 
 
 
-  getcontact() {
+  async getcontact() {
+
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/contact/all`)
+      .get<any[]>(`${GlobalConstants.apiURL}/contact/all`, header)
       .subscribe(
         (response) => {
 
@@ -58,9 +69,19 @@ export class ContactService {
 
   }
 
-  getOneContact(id) {
+  async getOneContact(id) {
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
     this.http
-      .get<any[]>(`${GlobalConstants.apiURL}/contact/details/${id}`)
+      .get<any[]>(`${GlobalConstants.apiURL}/contact/details/${id}`,header)
       .subscribe(
         (response) => {
           this.contactOne = response;
@@ -74,6 +95,17 @@ export class ContactService {
 
   async updateContact(id, contact){
 
+    let token;
+    await this.storage.get('ACCESS_TOKEN').then((val) => {
+      token = val;
+    });
+
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Basic ${token}`)
+    }
+
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Veuillez patienter',
@@ -82,7 +114,7 @@ export class ContactService {
     await loading.present();
    
       this.http
-        .put(`${GlobalConstants.apiURL}/contact/edit/${id}`, contact)
+        .put(`${GlobalConstants.apiURL}/contact/edit/${id}`, contact,header)
         .subscribe(
           () => {
             this.updateContactToast();
@@ -93,6 +125,8 @@ export class ContactService {
           (error) => {
             this.ImpossibleUpdateContactToast();
             console.log('Erreur ! : ' + error);
+            loading.dismiss();
+
           }
         );
 

@@ -68,38 +68,8 @@ export class AddPage implements OnInit {
     return this.productForm.get('description') as FormArray;
   }
 
-  onSubmitForm(){
-   
-    this.http
-      .post(`${GlobalConstants.apiURL}/product/add`, this.productForm.value)
-      .subscribe(
-        () => {
-          this.saveProductToast();
-          //this.socket.emit('get-product');
-          this.router.navigate(['/tabs/product']);
-          console.log('Enregistrement terminé !');
-        },
-        (error) => {
-          this.ImpossiblesaveProductToast();
-          console.log('Erreur ! : ' + error);
-        }
-      );
-  }
-
-  async saveProductToast() {
-    const toast = await this.toastCtrl.create({
-      message: 'Produit Enregistré',
-      duration: 2000
-    });
-    toast.present();
-  }
-
-  async ImpossiblesaveProductToast() {
-    const toast = await this.toastCtrl.create({
-      message: 'Enregistrement Impossible',
-      duration: 2000
-    });
-    toast.present();
+  onSubmitForm(){ 
+    this.productService.addProduct(this.productForm.value);
   }
 
 

@@ -9,10 +9,6 @@ const routes: Routes = [
     component: SettingsPage
   },
   {
-    path: 'contacts',
-    loadChildren: () => import('../contacts/contacts.module').then( m => m.ContactsPageModule)
-  },
-  {
     path: 'compte',
     loadChildren: () => import('../compte/compte.module').then( m => m.ComptePageModule)
   },

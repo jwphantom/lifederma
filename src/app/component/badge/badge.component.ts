@@ -25,7 +25,7 @@ export class BadgeComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.storeOrder();
+    //this.storeOrder();
     this.badge = 1;
 
   }
@@ -52,6 +52,7 @@ export class BadgeComponent implements OnInit {
       }
     );
     this.orderService.emitOrder();
+    
 
   }
 

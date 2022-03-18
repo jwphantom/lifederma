@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 import 'firebase/auth';
 import { User } from '../models/user';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GlobalConstants } from '../common/global-constants';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
@@ -32,11 +32,22 @@ export class ProfileService {
     currentUser: any = [];
 
     async getUserProfile() {
+
+        let token;
+        await this.storage.get('ACCESS_TOKEN').then((val) => {
+            token = val;
+        });
+
+        var header = {
+            headers: new HttpHeaders()
+                .set('Authorization', `Basic ${token}`)
+        }
+
         const user = await this.authService.getUser();
 
         if (user) {
             this.http
-                .get<any[]>(`${GlobalConstants.apiURL}/user/details/${user.email}`)
+                .get<any[]>(`${GlobalConstants.apiURL}/user/details/${user.email}`, header)
                 .subscribe(
                     (response) => {
                         this.socket.emit('get-user');
@@ -50,15 +61,23 @@ export class ProfileService {
 
     }
 
-    updateName(fullName: string, id: String, email:String) {
+    async updateName(fullName: string, id: String, email: String) {
+        let token;
+        await this.storage.get('ACCESS_TOKEN').then((val) => {
+            token = val;
+        });
 
-        var name = { 
+        var header = {
+            headers: new HttpHeaders()
+                .set('Authorization', `Basic ${token}`)
+        }
+
+        var name = {
             name: fullName
         };
-        console.log(`${GlobalConstants.apiURL}/user/updateName/${id}`, name);
 
         this.http
-            .put(`${GlobalConstants.apiURL}/user/updateName/${id}`, name)
+            .put(`${GlobalConstants.apiURL}/user/updateName/${id}`, name,header)
             .subscribe(
                 (response) => {
                     this.socket.emit('user-profile', email);
@@ -71,12 +90,21 @@ export class ProfileService {
             );
     }
 
-    updatePhone(phone: string, id: String, email:String) {
+    async updatePhone(phone: string, id: String, email: String) {
+        let token;
+        await this.storage.get('ACCESS_TOKEN').then((val) => {
+            token = val;
+        });
+
+        var header = {
+            headers: new HttpHeaders()
+                .set('Authorization', `Basic ${token}`)
+        }
 
         var tel = { phone: phone };
 
         this.http
-            .put(`${GlobalConstants.apiURL}/user/updatePhone/${id}`, tel)
+            .put(`${GlobalConstants.apiURL}/user/updatePhone/${id}`, tel, header)
             .subscribe(
                 (response) => {
                     this.socket.emit('user-profile', email);
